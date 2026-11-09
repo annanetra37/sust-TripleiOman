@@ -21,7 +21,8 @@ async function main() {
   const sara = await mk('sara@demo.om', 'Sara (Accountant)');
   await mk('staff@triplei.om', 'Triple i Oman Staff', { platformRole: 'PLATFORM_ADMIN' });
 
-  let org = await prisma.organisation.findFirst({ where: { crNumber: '1234567' } });
+  const existing = await prisma.membership.findFirst({ where: { userId: fatma.id }, include: { organisation: true } });
+  let org = existing?.organisation;
   if (!org) {
     org = await prisma.organisation.create({ data: {
       legalNameEn: 'Al Noor Trading LLC', legalNameAr: 'شركة النور للتجارة ش.م.م', crNumber: '1234567', legalForm: 'LLC', activities: 'Wholesale of office furniture and supplies',

@@ -29,7 +29,7 @@ const origins = config.corsOrigins.split(',').map((s) => s.trim()).filter(Boolea
 if (origins.length) app.use('/api', cors({ origin: origins, credentials: false }));
 app.use(express.json({ limit: '5mb' }));
 
-app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, limit: 60, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many requests. Try again in a few minutes.' } }));
+app.use(['/api/auth/login', '/api/auth/signup', '/api/auth/mfa', '/api/auth/forgot-password', '/api/auth/reset-password', '/api/auth/accept-invite'], rateLimit({ windowMs: 15 * 60 * 1000, limit: 60, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many requests. Try again in a few minutes.' } }));
 app.use('/api', rateLimit({ windowMs: 60 * 1000, limit: 300, standardHeaders: true, legacyHeaders: false }));
 
 app.get('/api/health', async (req, res) => {

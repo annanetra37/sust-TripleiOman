@@ -1,24 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
-  darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"IBM Plex Sans"', '"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
+        arabic: ['"IBM Plex Sans Arabic"', '"IBM Plex Sans"', 'Tahoma', 'sans-serif'],
+      },
       colors: {
-        brand: {
-          50: '#edfff0',
-          100: '#d5ffe0',
-          200: '#a8ffc0',
-          300: '#6bf690',
-          400: '#2de85f',
-          500: '#00C30A',
-          600: '#00a108',
-          700: '#007d06',
-          800: '#006305',
-          900: '#004f04',
-          950: '#003700',
-        },
-        esg: { e: '#00a108', s: '#6366f1', g: '#f59e0b' },
+        // Deep Omani green with a red accent (flag colours), tuned for contrast (WCAG AA).
+        brand: { 50: '#ecf8f1', 100: '#d1efdd', 200: '#a5dfbd', 300: '#6fc795', 400: '#3fa96f', 500: '#1f8b53', 600: '#167043', 700: '#135a38', 800: '#0f5132', 900: '#0c3a25', 950: '#062116' },
+        accent: { 50: '#fdeeee', 100: '#fbd5d5', 500: '#db2c2c', 600: '#b91f1f', 700: '#951a1a' },
       },
     },
   },

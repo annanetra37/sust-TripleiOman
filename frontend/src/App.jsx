@@ -1,106 +1,91 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
-import Login from './pages/Login';
-import VerifyEmail from './pages/VerifyEmail';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import AcceptInvite from './pages/AcceptInvite';
-import Home from './pages/Home';
-import Analytics from './pages/Analytics';
-import S1Dashboard from './pages/S1Dashboard';
-import E1Dashboard from './pages/E1Dashboard';
-import S1Upload from './pages/S1Upload';
-import E1Upload from './pages/E1Upload';
-import IsoBridge from './pages/IsoBridge';
-import PrepareGuide from './pages/PrepareGuide';
-import G1BoardDashboard from './pages/G1BoardDashboard';
-import G1EthicsDashboard from './pages/G1EthicsDashboard';
-import G1Upload from './pages/G1Upload';
-import Reports from './pages/Reports';
-import HistoryPage from './pages/HistoryPage';
-import UsersPage from './pages/UsersPage';
-import SettingsPage from './pages/SettingsPage';
-import Connections from './pages/Connections';
-import SBTiTargets from './pages/SBTiTargets';
-import LineagePage from './pages/LineagePage';
-import ActivityLogPage from './pages/ActivityLogPage';
-import ROIDashboard from './pages/ROIDashboard';
-import ProductList from './pages/pcf/ProductList';
-import ProductDetail from './pages/pcf/ProductDetail';
-import SuppliersPage from './pages/SuppliersPage';
-import ComingSoon from './pages/ComingSoon';
-import IsoGriBridge from './pages/IsoGriBridge';
-import ReadinessAssessment from './pages/ReadinessAssessment';
-import E3Dashboard from './pages/E3Dashboard';
-import E4Dashboard from './pages/E4Dashboard';
-import BuildingEnergy from './pages/BuildingEnergy';
+import { Loading } from './components/ui';
+import Chooser from './pages/Chooser';
+import { Login, Signup, ForgotPassword, ResetPassword, AcceptInvite } from './pages/Auth';
+import AmIAffected from './pages/AmIAffected';
 
-function ProtectedRoute({ children }) {
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Onboarding = lazy(() => import('./pages/Onboarding'));
+const Calendar = lazy(() => import('./pages/Calendar'));
+const Transactions = lazy(() => import('./pages/Transactions'));
+const Returns = lazy(() => import('./pages/Returns'));
+const ReturnDetail = lazy(() => import('./pages/ReturnDetail'));
+const EInvoices = lazy(() => import('./pages/EInvoices'));
+const EInvoiceEditor = lazy(() => import('./pages/EInvoiceEditor'));
+const EInvoiceDetail = lazy(() => import('./pages/EInvoiceDetail'));
+const Parties = lazy(() => import('./pages/Parties'));
+const Wht = lazy(() => import('./pages/Wht'));
+const Cit = lazy(() => import('./pages/Cit'));
+const Excise = lazy(() => import('./pages/Excise'));
+const Pit = lazy(() => import('./pages/Pit'));
+const Documents = lazy(() => import('./pages/Documents'));
+const Letters = lazy(() => import('./pages/Letters'));
+const Assistant = lazy(() => import('./pages/Assistant'));
+const AuditLog = lazy(() => import('./pages/AuditLog'));
+const Team = lazy(() => import('./pages/Team'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Clients = lazy(() => import('./pages/Clients'));
+const Admin = lazy(() => import('./pages/Admin'));
+
+function RequireAuth({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full" /></div>;
-  if (!user) return <Navigate to="/login" replace />;
+  const loc = useLocation();
+  if (loading) return <Loading />;
+  if (!user) return <Navigate to={`/login?next=${encodeURIComponent(loc.pathname + loc.search)}`} replace />;
   return children;
 }
 
-function PublicRoute({ children }) {
-  const { user, loading } = useAuth();
-  if (loading) return null;
-  if (user) return <Navigate to="/" replace />;
+/** Org-scoped pages need an organisation; new users are sent to onboarding first. */
+function RequireOrg({ children }) {
+  const { org, user } = useAuth();
+  if (!org && !user?.memberships?.length) return <Navigate to="/app/onboarding" replace />;
+  if (!org) return <Loading />;
   return children;
 }
 
 export default function App() {
+  const { user } = useAuth();
+  const O = (el) => <RequireOrg>{el}</RequireOrg>;
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-      {/* Public self-signup is disabled — licenses are issued via sales.
-          Direct /signup hits land on the login page, which links to the
-          contact form. */}
-      <Route path="/signup" element={<Navigate to="/login" replace />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/accept-invite" element={<AcceptInvite />} />
-      <Route path="/readiness" element={<ReadinessAssessment />} />
-      <Route path="/readiness/:token" element={<ReadinessAssessment />} />
-
-      {/* Protected routes */}
-      <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-        <Route path="/" element={<Home />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/dashboard/S/social-1" element={<S1Dashboard />} />
-        <Route path="/dashboard/E/environmental-1" element={<E1Dashboard />} />
-        <Route path="/platform/S/social-1" element={<S1Upload />} />
-        <Route path="/platform/E/environmental-1" element={<E1Upload />} />
-        <Route path="/iso-bridge" element={<IsoBridge />} />
-        <Route path="/prepare" element={<PrepareGuide />} />
-        <Route path="/dashboard/G/governance-1" element={<G1BoardDashboard />} />
-        <Route path="/dashboard/G/governance-2" element={<G1EthicsDashboard />} />
-        <Route path="/platform/G/governance-1" element={<G1Upload />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/history" element={<HistoryPage />} />
-        <Route path="/users" element={<UsersPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/connections" element={<Connections />} />
-        <Route path="/sbti-targets" element={<SBTiTargets />} />
-        <Route path="/lineage" element={<LineagePage />} />
-        <Route path="/activity-log" element={<ActivityLogPage />} />
-        <Route path="/roi" element={<ROIDashboard />} />
-        <Route path="/pcf" element={<ProductList />} />
-        <Route path="/pcf/:id" element={<ProductDetail />} />
-        <Route path="/suppliers" element={<SuppliersPage />} />
-        <Route path="/iso-gri" element={<IsoGriBridge />} />
-        <Route path="/dashboard/E/environmental-3" element={<E3Dashboard />} />
-        <Route path="/dashboard/E/environmental-4" element={<E4Dashboard />} />
-        <Route path="/buildings" element={<BuildingEnergy />} />
-        <Route path="/buildings/:id" element={<BuildingEnergy />} />
-        <Route path="/coming-soon" element={<ComingSoon />} />
-      </Route>
-
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/" element={<Chooser />} />
+        <Route path="/login" element={user ? <Navigate to="/app" replace /> : <Login />} />
+        <Route path="/signup" element={user ? <Navigate to="/app" replace /> : <Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/accept-invite" element={<AcceptInvite />} />
+        <Route path="/am-i-affected" element={<AmIAffected />} />
+        <Route path="/app" element={<RequireAuth><Layout /></RequireAuth>}>
+          <Route index element={O(<Dashboard />)} />
+          <Route path="onboarding" element={<Onboarding />} />
+          <Route path="calendar" element={O(<Calendar />)} />
+          <Route path="transactions" element={O(<Transactions />)} />
+          <Route path="returns" element={O(<Returns />)} />
+          <Route path="returns/:id" element={O(<ReturnDetail />)} />
+          <Route path="einvoices" element={O(<EInvoices />)} />
+          <Route path="einvoices/new" element={O(<EInvoiceEditor />)} />
+          <Route path="einvoices/:id/edit" element={O(<EInvoiceEditor />)} />
+          <Route path="einvoices/:id" element={O(<EInvoiceDetail />)} />
+          <Route path="parties" element={O(<Parties />)} />
+          <Route path="wht" element={O(<Wht />)} />
+          <Route path="cit" element={O(<Cit />)} />
+          <Route path="excise" element={O(<Excise />)} />
+          <Route path="pit" element={<Pit />} />
+          <Route path="documents" element={O(<Documents />)} />
+          <Route path="letters" element={O(<Letters />)} />
+          <Route path="assistant" element={<Assistant />} />
+          <Route path="audit" element={O(<AuditLog />)} />
+          <Route path="team" element={O(<Team />)} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="clients" element={<Clients />} />
+          <Route path="admin" element={<Admin />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 }

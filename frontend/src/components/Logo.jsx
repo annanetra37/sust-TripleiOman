@@ -1,37 +1,28 @@
-import { useTheme } from '../context/ThemeContext';
+import { useI18n } from '../i18n';
 
-export function LogoMark({ className = 'w-12 h-12' }) {
-  let dark = false;
-  try { const theme = useTheme(); dark = theme.dark; } catch {}
-  return <img src={dark ? '/logo-white.svg' : '/logo.svg'} alt="Triple I" className={className} />;
-}
-
-export function LogoFull({ className = '', size = 'default' }) {
-  let dark = false;
-  try { const theme = useTheme(); dark = theme.dark; } catch {}
-  const sizes = {
-    default: { img: 'w-10 h-10', title: 'text-[17px]', sub: 'text-[11px]' },
-    large: { img: 'w-14 h-14', title: 'text-[24px]', sub: 'text-[13px]' },
-  };
-  const s = sizes[size] || sizes.default;
-
+export function LogoMark({ className = 'h-8 w-8' }) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <img src={dark ? '/logo-white.svg' : '/logo.svg'} alt="Triple I" className={s.img} />
-      <div className="flex flex-col">
-        <span className={`font-bold ${s.title} tracking-[0.2em] leading-tight text-gray-900 dark:text-white`}>
-          TRIPLE I
-        </span>
-        <span className={`${s.sub} font-medium tracking-widest text-brand-600 dark:text-brand-400`}>
-          ESG PORTAL
-        </span>
-      </div>
-    </div>
+    <svg viewBox="0 0 64 64" className={className} aria-hidden>
+      <rect width="64" height="64" rx="14" fill="#0f5132" />
+      <rect x="14" y="20" width="7" height="30" rx="3.5" fill="#fff" />
+      <rect x="28.5" y="20" width="7" height="30" rx="3.5" fill="#fff" />
+      <rect x="43" y="20" width="7" height="30" rx="3.5" fill="#fff" />
+      <circle cx="17.5" cy="12.5" r="3.5" fill="#db2c2c" />
+      <circle cx="32" cy="12.5" r="3.5" fill="#db2c2c" />
+      <circle cx="46.5" cy="12.5" r="3.5" fill="#db2c2c" />
+    </svg>
   );
 }
 
-export function LogoIcon({ className = 'w-8 h-8' }) {
-  let dark = false;
-  try { const theme = useTheme(); dark = theme.dark; } catch {}
-  return <img src={dark ? '/logo-white.svg' : '/logo.svg'} alt="Triple I" className={className} />;
+export default function Logo({ light = false, sub = true }) {
+  const { t } = useI18n();
+  return (
+    <div className="flex items-center gap-2.5">
+      <LogoMark />
+      <div className="leading-tight">
+        <div className={`font-semibold ${light ? 'text-white' : 'text-brand-900'}`}>{t('appName')}</div>
+        {sub && <div className={`text-[11px] ${light ? 'text-brand-100' : 'text-slate-500'}`}>{t('tagline')}</div>}
+      </div>
+    </div>
+  );
 }

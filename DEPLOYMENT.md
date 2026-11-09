@@ -1,91 +1,57 @@
-# Deploying Triple I ESG Portal on Railway
+# Deploying Triple i Oman on Railway
 
-## Prerequisites
-- A [Railway](https://railway.app) account (sign up with GitHub)
-- This repository pushed to GitHub
+The repository deploys as **one Railway service** (API + web app, built from the root `Dockerfile`) plus **one PostgreSQL database**. `railway.json` already configures the Docker build, the health check (`/api/health`) and restart policy. Database migrations run automatically on every deploy (`prisma migrate deploy`), and the tax-rules library seeds itself on first boot.
 
-## Step-by-Step Deployment
+## 1. Create the project
 
-### 1. Create a New Project on Railway
+1. Go to <https://railway.com/new> → **Deploy from GitHub repo** → choose `sust-TripleiOman` (pick the branch you want to deploy).
+2. In the same project: **+ New → Database → PostgreSQL**.
 
-1. Go to [railway.app/new](https://railway.app/new)
-2. Click **"Deploy from GitHub repo"**
-3. Select your `sust` repository
+Leave the service's *Root Directory* empty (repo root). Railway detects `railway.json` and builds with the `Dockerfile`, so you don't need custom build or start commands.
 
-### 2. Add PostgreSQL Database
+## 2. Set variables (service → Variables)
 
-1. In your Railway project, click **"+ New"** → **"Database"** → **"PostgreSQL"**
-2. Railway will provision a PostgreSQL instance automatically
-3. Copy the `DATABASE_URL` from the PostgreSQL service's **Variables** tab
+| Variable | Required | Value |
+|---|---|---|
+| `DATABASE_URL` | ✅ | `${{Postgres.DATABASE_URL}}` (reference to the Postgres service) |
+| `JWT_SECRET` | ✅ | long random string, e.g. `openssl rand -hex 48` |
+| `JWT_REFRESH_SECRET` | ✅ | a **different** long random string |
+| `NODE_ENV` | ✅ | `production` (already set in the image) |
+| `BOOTSTRAP_ADMIN_EMAIL` | recommended | your email: the account that signs up with it becomes the staff `PLATFORM_ADMIN` |
+| `APP_URL` | recommended | public URL, e.g. `https://om.triplei.io` (defaults to the Railway domain) |
+| `MFA_REQUIRED` | optional | `true` by default in production; every user enrols an authenticator app |
+| `ALLOW_PUBLIC_SIGNUP` | optional | `true` (self sign-up) or `false` (invitation only) |
+| `TRIPLEI_URL` | optional | link for the "Triple i: Sustainability" card, default `https://app.triplei.io` |
+| `RESEND_API_KEY`, `RESEND_FROM` | optional | real emails (reset links, invitations, reminders); without them emails are only logged |
+| `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` | optional | AI answers in the tax assistant; without them it answers from the curated library |
+| `ASP_PROVIDER`, `ASP_BASE_URL`, `ASP_API_KEY` | optional | `sandbox` simulates Fawtara; set `http` + partner ASP URL/key once contracted |
 
-### 3. Deploy the Backend
+Don't set `PORT`. Railway injects it.
 
-1. Click **"+ New"** → **"GitHub Repo"** → select your repo
-2. In the service settings:
-   - **Root Directory**: `backend`
-   - **Start Command**: `npx prisma generate && npx prisma db push --accept-data-loss && node src/server.js`
-3. Go to the **Variables** tab and add:
+## 3. Networking
 
-```
-DATABASE_URL=<paste from PostgreSQL service>
-JWT_SECRET=<generate a random 64-char string>
-JWT_REFRESH_SECRET=<generate another random 64-char string>
-PORT=4000
-FRONTEND_URL=https://your-frontend-url.up.railway.app
-ANTHROPIC_API_KEY=sk-ant-your-api-key
-ANTHROPIC_MODEL=claude-sonnet-5
-NODE_ENV=production
-```
+Service → **Settings → Networking → Generate Domain** (or add a custom domain such as `om.triplei.io` and point a CNAME to it). If you set a custom domain, also set `APP_URL` to it.
 
-4. Railway will auto-deploy. Check the **Deployments** tab for logs.
+## 4. First login
 
-### 4. Deploy the Frontend
+1. Open the domain. You see the Triple i / Triple i Oman chooser.
+2. Choose **Triple i Oman → Create an account** using the `BOOTSTRAP_ADMIN_EMAIL` address. You'll be asked to scan a QR code with an authenticator app.
+3. Create your organisation and answer the questionnaire. The calendar and reminders are generated automatically.
+4. The **Staff console** (sidebar) lets you review the tax rules library. Confirm the `[VERIFY]` items with your Omani tax adviser.
 
-1. Click **"+ New"** → **"GitHub Repo"** → select your repo again
-2. In the service settings:
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npx serve dist -s -l $PORT`
-3. Go to the **Variables** tab and add:
+Optional demo data, from the service shell (`railway run` or the Railway shell):
 
-```
-VITE_API_URL=https://your-backend-url.up.railway.app
+```bash
+cd /app/backend && node src/prisma/seed.js --demo
 ```
 
-4. In the frontend's `vite.config.js`, the proxy targets `localhost:4000`. For production, update the API base URL in `frontend/src/services/api.js` to use the backend's Railway URL, or set up a custom domain.
+## Operations
 
-### 5. Set Custom Domains (Optional)
+- **Health:** `GET /api/health` returns `{"status":"ok","db":"ok"}`.
+- **Migrations:** schema changes go in `backend/prisma/migrations` (`npx prisma migrate dev --name <change>` locally); deploys apply them automatically.
+- **Backups:** enable Railway Postgres backups. Document files are stored in the database (`TaxDocument.data`), so backups include them.
+- **Reminders** run hourly inside the service (set `DISABLE_REMINDERS=1` to turn them off).
 
-1. In each service, go to **Settings** → **Networking** → **Generate Domain** or add a custom domain
-2. Update `FRONTEND_URL` in the backend to match the frontend's domain
+## ⚠️ Data residency (plan §5.3)
 
-### 6. Seed the Database
-
-After the backend deploys successfully:
-1. Open the backend service's **Shell** tab in Railway
-2. Run: `node src/prisma/seed.js`
-
-This populates emission factor categories.
-
-## Environment Variables Reference
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `JWT_SECRET` | Yes | Secret for access token signing |
-| `JWT_REFRESH_SECRET` | Yes | Secret for refresh token signing |
-| `PORT` | Yes | Server port (Railway sets this) |
-| `FRONTEND_URL` | Yes | Frontend URL for CORS |
-| `ANTHROPIC_API_KEY` | Yes | Anthropic API key for AI features |
-| `ANTHROPIC_MODEL` | No | AI model (default: claude-sonnet-5) |
-| `SMTP_HOST` | No | Email server (leave empty for dev mode) |
-| `SMTP_PORT` | No | Email port (default: 587) |
-| `SMTP_USER` | No | Email sender address |
-| `SMTP_PASS` | No | Email password / app password |
-
-## Troubleshooting
-
-- **Build fails**: Check that `package.json` has all dependencies listed
-- **Database errors**: Ensure `DATABASE_URL` is correct and the Prisma schema is pushed
-- **CORS errors**: Ensure `FRONTEND_URL` matches the actual frontend domain
-- **AI features not working**: Verify `ANTHROPIC_API_KEY` is set correctly
+The development plan says **Railway cannot pin data to Oman**, so it is not suitable for real production tax data under Oman's PDPL and TaxOman's expectations for service providers. Use Railway for **development, staging, demos and pilots with consenting customers**. For production, run the same Docker image on an in-country provider (e.g. Oman Data Park) with Postgres in Oman. The image is provider-neutral: it needs one container plus `DATABASE_URL` and the variables above. Confirm the hosting location with your lawyer and TaxOman first.

@@ -32,7 +32,8 @@ Items marked **[VERIFY]** in the rules library (plan §12) must be confirmed wit
 ## Stack
 
 - **Backend:** Node 22, Express, Prisma 7 + PostgreSQL. Pure, unit-tested calculation engines in `backend/src/engines`.
-- **Frontend:** React 18, Vite, Tailwind, IBM Plex Sans Arabic. In production the backend serves the built frontend, so it all runs as **one service**.
+- **Frontend:** React 18, Vite, Tailwind, IBM Plex Sans Arabic.
+- **Deployment:** two Railway services (`backend/`, `frontend/`, each with its own `Dockerfile` and `railway.json`) plus Postgres. The frontend reads its API URL at startup (`API_URL`).
 
 ## Local development
 
@@ -61,4 +62,4 @@ cd backend && npm test
 
 ## Deployment
 
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for Railway.
+See **[DEPLOYMENT.md](DEPLOYMENT.md)**: Railway with 3 services (`om.triplei.io` → `api.om.triplei.io` → Postgres), separate from original Triple i's `api.triplei.io`.

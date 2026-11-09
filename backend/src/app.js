@@ -23,10 +23,12 @@ app.use(helmet({
     },
   },
   crossOriginEmbedderPolicy: false,
+  // The web app may live on another domain (e.g. om.triplei.io → api.om.triplei.io).
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 app.use(compression());
 const origins = config.corsOrigins.split(',').map((s) => s.trim()).filter(Boolean);
-if (origins.length) app.use('/api', cors({ origin: origins, credentials: false }));
+if (origins.length) app.use('/api', cors({ origin: origins, credentials: false, exposedHeaders: ['Content-Disposition'], maxAge: 600 }));
 app.use(express.json({ limit: '5mb' }));
 
 app.use(['/api/auth/login', '/api/auth/signup', '/api/auth/mfa', '/api/auth/forgot-password', '/api/auth/reset-password', '/api/auth/accept-invite'], rateLimit({ windowMs: 15 * 60 * 1000, limit: 60, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many requests. Try again in a few minutes.' } }));

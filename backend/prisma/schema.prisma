@@ -1,3 +1,7 @@
+// Triple i Oman — Tax compliance automation platform
+// Separate identity realm and database from original Triple i (plan §5.1).
+// All money is stored as integer baisa (1 OMR = 1,000 baisa) in BigInt columns (plan E1-07).
+
 generator client {
   provider   = "prisma-client-js"
   output     = "../node_modules/.prisma/client"
@@ -8,1145 +12,464 @@ datasource db {
   provider = "postgresql"
 }
 
-// ─── Authentication & Users ─────────────────────────────────────
-
-model Company {
-  id               String   @id @default(uuid())
-  name             String
-  country          String
-  hqLocation       String?
-  industry         String
-  companySize      String
-  ownershipType    String?
-  yearEstablished  Int?
-  legalStructure   String?
-  regionsOfOp      String[] @default([])
-  stockExchange    String?
-  tickerSymbol     String?
-  logoPath         String?      // path to uploaded company logo (PNG/JPG)
-  creditBalance    Int      @default(100)
-  esgStandard      String   @default("ESRS")
-
-  // ─── Subscription tier ───────────────────────────────────────
-  // 'STARTER' | 'PROFESSIONAL' | 'ENTERPRISE'
-  // Feature gating + hard limits are driven by this value.  The
-  // canonical tier → features map lives in services/tierFeatures.js.
-  tier             String   @default("STARTER")
-
-  // ─── Anonymous benchmark cohort opt-in ───────────────────────
-  // When true, this company's aggregated KPI values contribute to the
-  // sector benchmark cohorts (see BenchmarkCohort).  Only opted-in
-  // companies can read cohort stats.  Withdrawal is retroactive — a
-  // nightly job recomputes cohorts excluding withdrawn contributors.
-  benchmarkOptIn   Boolean  @default(false)
-
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  users            User[]
-  orgUnits         OrgUnit[]
-  creditTxns       CreditTransaction[]
-  uploadHistory    UploadHistory[]
-  dataConnections  DataConnection[]
-
-  workforceComp    FS1WorkforceComposition[]
-  workforceDiver   FS1WorkforceDiversity[]
-  workplaceInj     FS1WorkplaceInjuries[]
-  employeeTraining FS1EmployeeTraining[]
-  employeeTurnover FS1EmployeeTurnover[]
-
-  boardComposition    FG1BoardComposition[]
-  ethicsTraining      FG1EthicsTraining[]
-  governanceIncidents FG1GovernanceIncident[]
-  policyRegister      FG1PolicyRegister[]
-
-  emissionActivity FE1EmissionActivityData[]
-  ghgInventory     FE1GHGInventory[]
-  sbtiTargets      SBTiTarget[]
-
-  financials       CompanyFinancials?
-
-  // PCF / Sector pack relations (Sprint 1)
-  products         Product[]
-  components       Component[]
-  sectorSelection  CompanySectorSelection?
-  suppliers        Supplier[]
-  realEstateAssets RealEstateAsset[]
-  financialExposures FinancialExposure[]
-  isoIngestions    IsoDataIngestion[]
-  griGapAnalyses   GriGapAnalysis[]
-
-  sites            Site[]
-  waterActivities  WaterActivity[]
-  biodiversityAssessments BiodiversityAssessment[]
-
-  isoCertificates    IsoCertificate[]
-  isoEvidenceRecords IsoEvidenceRecord[]
-  disclosureDrafts   DisclosureDraft[]
-  reverseExportPacks ReverseExportPack[]
-  preparationPlans   PreparationPlan[]
-}
-
-// ─── Sustainability ROI inputs ──────────────────────────────────
-// Per-company financial assumptions used by the ROI module to translate
-// emission / energy / workforce data into USD impact.  Populated from the
-// ROI dashboard's "financial data" form.  Defaults mirror industry averages
-// so the module still produces meaningful numbers before the CFO steps in.
-model CompanyFinancials {
-  id                           String  @id @default(uuid())
-  companyId                    String  @unique
-  company                      Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  // Energy cost (USD per kWh) — drives the "Energy cost savings" pillar.
-  electricityPricePerKwh       Float   @default(0.15)
-  // Shadow / actual carbon price (USD per tCO2e) — drives the
-  // "Carbon tax avoidance" pillar.
-  carbonTaxPerTco2e            Float   @default(85)
-  // Average fully-loaded recruiting cost per hire (USD) — drives the
-  // "HR & talent ROI" pillar.
-  avgRecruitingCostPerHire     Float   @default(4700)
-  // Total annual revenue (USD) — drives the "Contract eligibility" pillar.
-  annualRevenue                Float?
-  // Share of revenue tied to contracts that require an ESG / sustainability
-  // certification to win or keep.  Stored as a fraction in [0, 1].
-  esgDependentRevenueShare     Float   @default(0.35)
-  // Currency symbol used for display.  Storage stays in USD.
-  currency                     String  @default("USD")
-
-  createdAt                    DateTime @default(now())
-  updatedAt                    DateTime @updatedAt
-}
+// ─── Identity (Triple i Oman realm only) ─────────────────────────
 
 model User {
-  id              String    @id @default(uuid())
-  email           String    @unique
-  passwordHash    String
-  firstName       String
-  lastName        String
-  phone           String?
-  jobTitle        String?
-  role            Role      @default(CUSTOM)
-  isActive        Boolean   @default(false)
-  emailVerified   Boolean   @default(false)
-  otpCode         String?
-  otpExpiresAt    DateTime?
-  otpLastSentAt   DateTime?
-  resetToken      String?
-  resetTokenExp   DateTime?
-  inviteToken     String?
-  inviteTokenExp  DateTime?
-  refreshToken    String?
-  companyId       String
-  company         Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
-  permissions     UserPermission[]
-  creditTxns      CreditTransaction[]
-  uploadHistory   UploadHistory[]
-  activityLogs    ActivityLog[]
-}
-
-// ─── Activity Log ───────────────────────────────────────────────
-
-model ActivityLog {
-  id          String   @id @default(uuid())
-  companyId   String
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  action      String
-  detail      String?
-  metadata    Json?
-  ipAddress   String?
-  createdAt   DateTime @default(now())
-}
-
-// ─── Internal Cost Tracking (admin-only, not user-visible) ──────
-
-model CostLog {
-  id            String   @id @default(uuid())
-  companyId     String
-  userId        String?
-  operation     String   // AI_SCHEMA_MAP, AI_CLEAN, AI_DOC_EXTRACT, AI_ASSISTANT, OCR, PDF_PARSE, REPORT_GEN
-  model         String?  // claude-sonnet-4-20250514, tesseract, etc.
-  inputTokens   Int?
-  outputTokens  Int?
-  totalTokens   Int?
-  estimatedCost Float?   // USD
-  durationMs    Int?     // processing time in milliseconds
-  relatedId     String?  // upload ID or other reference
-  metadata      Json?    // extra details (file name, rows processed, etc.)
-  createdAt     DateTime @default(now())
-}
-
-enum Role {
-  ADMIN
-  CUSTOM
-}
-
-model UserPermission {
-  id        String  @id @default(uuid())
-  userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orgUnitId String
-  orgUnit   OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  canView   Boolean @default(false)
-  canUpload Boolean @default(false)
-  canDelete Boolean @default(false)
-
-  @@unique([userId, orgUnitId])
-}
-
-model OrgUnit {
-  id        String  @id @default(uuid())
-  name      String
-  country   String
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  permissions      UserPermission[]
-  workforceComp    FS1WorkforceComposition[]
-  workforceDiver   FS1WorkforceDiversity[]
-  workplaceInj     FS1WorkplaceInjuries[]
-  employeeTraining FS1EmployeeTraining[]
-  employeeTurnover FS1EmployeeTurnover[]
-  boardComposition    FG1BoardComposition[]
-  ethicsTraining      FG1EthicsTraining[]
-  governanceIncidents FG1GovernanceIncident[]
-  policyRegister      FG1PolicyRegister[]
-  emissionActivity FE1EmissionActivityData[]
-  ghgInventory     FE1GHGInventory[]
-
-  products         Product[]
-  sites            Site[]
-
-  @@unique([name, companyId])
-}
-
-// ─── Credits ────────────────────────────────────────────────────
-
-model CreditTransaction {
-  id              String   @id @default(uuid())
-  companyId       String
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  userId          String
-  user            User     @relation(fields: [userId], references: [id])
-  transactionType String   // EXCEL_S1, EXCEL_E1, DOC_EXTRACT_E1
-  creditsUsed     Int
-  description     String?
-  relatedFileId   String?
-  createdAt       DateTime @default(now())
-}
-
-// ─── Upload History ─────────────────────────────────────────────
-
-model UploadHistory {
-  id             String       @id @default(uuid())
-  companyId      String
-  company        Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  userId         String
-  user           User         @relation(fields: [userId], references: [id])
-  fileName       String
-  fileType       String       // E1, S1
-  orgUnit        String?
-  orgUnitId      String?
-  status         UploadStatus @default(PROCESSING)
-  totalRows      Int?
-  processedRows  Int?
-  errorMessage   String?
-  storedFilePath String?      // path to original uploaded file on disk
-  storedFileSize Int?         // file size in bytes
-  storedFileMime String?      // MIME type
-  auditStatus    String?      @default("pending") // pending, verified, flagged, rejected
-  auditNote      String?
-  auditedBy      String?
-  auditedAt      DateTime?
-  deletedAt      DateTime?     // when the underlying data was deleted
-  deletedBy      String?       // who deleted it
-  deletedNote    String?       // deletion details
-  createdAt      DateTime     @default(now())
-  completedAt    DateTime?
-}
-
-enum UploadStatus {
-  PROCESSING
-  COMPLETED
-  FAILED
-}
-
-// ─── S1: Own Workforce ──────────────────────────────────────────
-
-model FS1WorkforceComposition {
-  id            String  @id @default(uuid())
-  companyId     String
-  company       Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId     String
-  orgUnit       OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year          Int
-  quarter       Int?
-  gender        String  // Male, Female, Non-binary, Not disclosed
-  contractType  String  // Permanent, Temporary, Part-time, Full-time
-  country       String?
-  employeeCount Int
-  createdAt     DateTime @default(now())
-}
-
-model FS1WorkforceDiversity {
-  id               String  @id @default(uuid())
-  companyId        String
-  company          Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId        String
-  orgUnit          OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year             Int
-  quarter          Int?
-  gender           String
-  disabilityStatus String  // Yes, No, Not disclosed
-  disabilityType   String?
-  count            Int
-  createdAt        DateTime @default(now())
-}
-
-model FS1WorkplaceInjuries {
-  id           String  @id @default(uuid())
-  companyId    String
-  company      Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId    String
-  orgUnit      OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year         Int
-  quarter      Int?
-  injuryType   String
-  injuryStatus String  // Fatal, Non-fatal, Lost-time
-  gender       String?
-  count        Int
-  createdAt    DateTime @default(now())
-}
-
-model FS1EmployeeTraining {
-  id             String  @id @default(uuid())
-  companyId      String
-  company        Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId      String
-  orgUnit        OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year           Int
-  quarter        Int?
-  gender         String
-  trainingHours  Float
-  employeeCount  Int
-  createdAt      DateTime @default(now())
-}
-
-model FS1EmployeeTurnover {
-  id            String  @id @default(uuid())
-  companyId     String
-  company       Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId     String
-  orgUnit       OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year          Int
-  quarter       Int?
-  gender        String
-  turnoverType  String  // Voluntary, Involuntary
-  count         Int
-  createdAt     DateTime @default(now())
-}
-
-// ─── Preparation Guide ("Where to Start" wizard) ────────────────
-// Per-topic onboarding: the user answers a few questions and gets a
-// personalized "what to have in hand" checklist. Answers + ticked items
-// are persisted per company so the checklist doubles as a shared to-do.
-
-model PreparationPlan {
-  id           String   @id @default(uuid())
-  companyId    String
-  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  topic        String   // e1 | s1 | g1 | pcf | isoBridge | reports
-  answers      Json     // { questionKey: value | [values] }
-  checkedItems String[] @default([]) // checklist item ids ticked off
-  updatedById  String?
-  updatedAt    DateTime @updatedAt
-  createdAt    DateTime @default(now())
-
-  @@unique([companyId, topic])
-}
-
-// ─── ISO-to-GRI/ESRS Bridge (EcoHub Engine) ─────────────────────
-// Document/disclosure crosswalk module — distinct from the record-level
-// ISO→GRI connector bridge (IsoGriMappingRule / IsoDataIngestion).
-
-model IsoCertificate {
-  id                   String    @id @default(uuid())
-  companyId            String
-  company              Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  isoStandard          String    // 14001, 45001, 50001, 14064-1, 14046, 37001, 9001
-  isoEdition           String    @default("unknown") // 2015 | 2026 | year | unknown — drives crosswalk version
-  certNumber           String?
-  certBody             String?   // TÜV, DNV, SGS, BSI…
-  accreditationBody    String?   // DAkkS, UKAS, ANAB…
-  accredited           Boolean?  // null = could not determine; false = flag low-trust
-  scopeStatement       String?
-  sites                String[]  @default([])
-  issueDate            DateTime?
-  expiryDate           DateTime?
-  nextSurveillanceDate DateTime?
-  sourceFile           String?   // stored file path (uploads/<companyId>/…)
-  sourceFileName       String?
-  extractionConfidence Float?
-  createdAt            DateTime  @default(now())
-
-  evidenceRecords IsoEvidenceRecord[]
-}
-
-model IsoEvidenceRecord {
-  id             String          @id @default(uuid())
-  companyId      String
-  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  certificateId  String?
-  certificate    IsoCertificate? @relation(fields: [certificateId], references: [id], onDelete: SetNull)
-  recordType     String          // aspectsRegister | complianceRegister | objectives | monitoring | incidentRegister | energyReview | mgmtReview | nonconformity | policy | contextAnalysis | …
-  payload        Json            // structured extraction result
-  sourceFile     String?         // stored file path — provenance
-  sourceFileName String?
-  sourceLocation String?         // page / sheet / section reference
-  language       String?
-  ingestedAt     DateTime        @default(now())
-}
-
-model DisclosureDraft {
   id             String    @id @default(uuid())
-  companyId      String
-  company        Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  disclosureCode String    // e.g. "GRI 403-1", "ESRS E1-2"
-  standard       String    // GRI | ESRS | TCFD | ISSB
-  year           Int
-  draftText      String
-  citations      Json      // [{ mappingId, isoStandard, clause, clauseTitle, sourceFile, sourceFileName, sourceLocation, evidenceRecordId }]
-  confidence     Float?
-  modelVersion   String?
-  promptVersion  String?
-  status         String    @default("DRAFT") // DRAFT | APPROVED | REJECTED
-  editedText     String?   // reviewer-edited final text (used instead of draftText when set)
-  reviewerId     String?
-  reviewedAt     DateTime?
-  language       String    @default("en")
+  email          String    @unique
+  passwordHash   String
+  fullName       String
+  phone          String?   // +968 mobile for SMS fallback
+  locale         String    @default("en") // 'en' | 'ar'
+  digitStyle     String    @default("western") // 'western' | 'arabic'
+  showHijri      Boolean   @default(false)
+  // Platform staff role (Triple i Oman employees). Null for customers.
+  // 'PLATFORM_ADMIN' | 'TAX_SPECIALIST' | 'SUPPORT'
+  platformRole   String?
+  isActive       Boolean   @default(true)
+  emailVerified  Boolean   @default(false)
+  mfaEnabled     Boolean   @default(false)
+  mfaSecret      String?
+  recoveryCodes  Json      @default("[]") // array of bcrypt hashes
+  failedLogins   Int       @default(0)
+  lockedUntil    DateTime?
+  lastLoginAt    DateTime?
+  resetToken     String?   @unique
+  resetExpiresAt DateTime?
+  tokenVersion   Int       @default(0) // bump to revoke all refresh tokens
   createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  @@index([companyId, standard, year, status])
+  memberships    Membership[]
+  consents       ConsentRecord[]
+  notifications  Notification[]
+  pitProfiles    PitProfile[]
 }
 
-model ReverseExportPack {
-  id                String   @id @default(uuid())
-  companyId         String
-  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  theme             String   // climate | biodiversity | resource | lifecycle
-  year              Int
-  targetClauses     String[] @default([]) // 14001:2026 clauses: 4.1 / 4.2 / 6.1.2
-  contentBlocks     Json     // [{ clause, title, body, dataRefs }]
-  disclaimerVersion String   @default("1.0")
-  generatedAt       DateTime @default(now())
-}
-
-// ─── G1: Governance ─────────────────────────────────────────────
-
-model FG1BoardComposition {
-  id           String  @id @default(uuid())
-  companyId    String
-  company      Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId    String
-  orgUnit      OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year         Int
-  quarter      Int?
-  gender       String  // Male, Female, Non-binary, Not disclosed
-  role         String  // Executive, Non-executive, Chair, Vice-chair, Committee member
-  independence String  // Independent, Non-independent, Not disclosed
-  ageBand      String? // Under 30, 30-50, Over 50
-  tenureYears  Float?  // average tenure in years for this group
-  count        Int
-  createdAt    DateTime @default(now())
-}
-
-model FG1EthicsTraining {
-  id               String  @id @default(uuid())
-  companyId        String
-  company          Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId        String
-  orgUnit          OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year             Int
-  quarter          Int?
-  topic            String  // Anti-corruption, Code of Conduct, Data Privacy, Anti-competitive, Whistleblowing, Other
-  audience         String  // Employees, Management, Board, Suppliers
-  employeesTrained Int
-  totalHeadcount   Int?    // audience size, for completion-rate calc
-  completionRate   Float?  // % — derived from counts when not provided
-  createdAt        DateTime @default(now())
-}
-
-model FG1GovernanceIncident {
-  id           String  @id @default(uuid())
-  companyId    String
-  company      Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId    String
-  orgUnit      OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year         Int
-  quarter      Int?
-  incidentType String  // Corruption, Bribery, Anti-competitive, Whistleblower report, Data privacy, Conflict of interest, Other
-  status       String  // Open, Under investigation, Substantiated, Dismissed, Resolved
-  actionTaken  String? // e.g. Dismissal, Contract termination, Process change
-  finesAmount  Float?  // monetary fines/penalties, USD
-  count        Int
-  createdAt    DateTime @default(now())
-}
-
-model FG1PolicyRegister {
-  id            String  @id @default(uuid())
-  companyId     String
-  company       Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId     String
-  orgUnit       OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year          Int
-  policyName    String
-  policyArea    String  // Anti-corruption, Code of Conduct, Whistleblower protection, Data privacy, Supplier code, Lobbying, Other
-  status        String  // In place, Draft, Under review, Not in place
-  boardApproved String? // Yes, No, Not disclosed
-  lastReviewed  Int?    // year of last review
-  coverage      String? // Employees, Suppliers, All
-  createdAt     DateTime @default(now())
-}
-
-// ─── E1: Climate Change ─────────────────────────────────────────
-
-model ActivityCategory {
-  id              String  @id @default(uuid())
-  name            String  @unique
-  subcategories   ActivitySubcategory[]
-}
-
-model ActivitySubcategory {
-  id              String  @id @default(uuid())
-  name            String
-  categoryId      String
-  category        ActivityCategory @relation(fields: [categoryId], references: [id])
-  emissionSource  String?
-  scope           String  // Scope 1, Scope 2, Scope 3
-  unit            String?
-  emissionFactor  Float?
-  emissionFactorUnit String?
-
-  @@unique([name, categoryId])
-}
-
-model FE1EmissionActivityData {
-  id                String   @id @default(uuid())
-  companyId         String
-  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId         String
-  orgUnit           OrgUnit  @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year              Int
-  month             Int?
-  activityCategory  String
-  activitySubcat    String
-  calcMethod        String   // consumption, expenditure
-  quantity          Float
-  unit              String
-  emissionFactor    Float?
-  totalEmissions    Float?   // tCO2e
-  scope             String
-  currency          String?
-  amount            Float?
-  sourceDoc         String?
-  createdAt         DateTime @default(now())
-}
-
-model FE1GHGInventory {
-  id               String  @id @default(uuid())
-  companyId        String
-  company          Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId        String
-  orgUnit          OrgUnit @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
-  year             Int
-  scope            String
-  totalEmissions   Float   // tCO2e
-  employeeCount    Int?
-  intensity        Float?  // tCO2e per employee
-  createdAt        DateTime @default(now())
-
-  @@unique([companyId, orgUnitId, year, scope])
-}
-
-model SBTiTarget {
-  id                String  @id @default(uuid())
-  companyId         String
-  company           Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  baseYear          Int
-  targetYear        Int
-  method            String  // absolute, intensity, renewable_share
-  reductionPct      Float?
-  absoluteTarget    Float?
-  scope             String  // Scope 1+2, Scope 3, All
-  description       String?
-  createdAt         DateTime @default(now())
-}
-
-// ─── Data Connections ───────────────────────────────────────────
-
-model DataConnection {
-  id           String   @id @default(uuid())
-  companyId    String
-  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  name         String
-  type         String   // postgresql, mysql, sqlserver, aws_rds, rest_api
-  config       Json     // encrypted connection details
-  status       String   @default("disconnected") // connected, disconnected, error
-  lastSyncAt   DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-// ─── PCF Module — Product Carbon Footprint (Sprint 1) ───────────
-// Sector-agnostic graph of Products → BOM → Components → EmissionFactors
-// → PcfCalculations.  Used by Electronics today, Automotive in Q4 2026,
-// Real Estate + Financial Services in Q1 2027.  Functional unit + lifecycle
-// stage fields are generic so an SSD, a vehicle, a building, and a
-// financial instrument are all just Products with different stages active.
-
-model Product {
-  id              String   @id @default(uuid())
-  companyId       String
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId       String?
-  orgUnit         OrgUnit? @relation(fields: [orgUnitId], references: [id])
-
-  sku             String
-  name            String
-  sector          String   // electronics | automotive | real_estate | financial | generic
-  functionalUnit  String   // "1 SSD module", "1 vehicle", "1 m2 leasable"
-  declaredUnit    String   // usually same as functionalUnit for Lite
-  massKg          Float?
-  lifetimeYears   Float?
-  methodology     String   @default("ISO_14067")
-
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  boms            BillOfMaterialsItem[]
-  processes       ProcessStep[]
-  calculations    PcfCalculation[]
-  scenarios       SavedScenario[]
-
-  @@unique([companyId, sku])
-  @@index([companyId, sector])
-}
-
-model Component {
-  id              String   @id @default(uuid())
-  companyId       String
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  name            String
-  materialClass   String   // "aluminum_6061", "pcb_fr4", "li_ion_nmc", ...
-  supplierName    String?
-  originCountry   String?
-  primaryDataFlag Boolean  @default(false)
-
-  createdAt       DateTime @default(now())
-  bomItems        BillOfMaterialsItem[]
-
-  @@index([companyId, materialClass])
-}
-
-model BillOfMaterialsItem {
-  id             String    @id @default(uuid())
-  productId      String
-  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  componentId    String
-  component      Component @relation(fields: [componentId], references: [id])
-  quantity       Float
-  unit           String    // kg, pcs, m, m2
-  scrapRatePct   Float     @default(0)
-  lifecycleStage String    // A1, A2, A3, A4, B1, C1 (EN 15978 stages)
-  chosenFactorId String?   // FK resolved at calculate-time (soft, no constraint)
-  sortOrder      Int       @default(0)
-
-  @@index([productId])
-  @@index([componentId])
-}
-
-// EmissionFactor is global — not scoped per company — because factors come
-// from public datasets (Ecoinvent, DEFRA, EPA) or from supplier submissions
-// that any buyer could reuse.  `source=supplier_primary` rows carry a
-// supplierCompanyId to preserve provenance.
-model EmissionFactor {
-  id                 String   @id @default(uuid())
-  source             String   // ecoinvent_3_10 | defra_2024 | epa_ghg_2024 | supplier_primary
-  activityName       String
-  materialClass      String?  // normalised tag for BOM classifier matching
-  region             String   // GLO | EU | US | VN | MY | CN | ...
-  value              Float
-  unit               String   // kgCO2e per <functionalUnit>
-  functionalUnit     String   // "kg" | "kWh" | "pcs" | "m3"
-  vintage            Int
-  uncertaintyStd     Float?   // for Monte Carlo
-  supplierCompanyId  String?  // set when source=supplier_primary
-  notes              String?
-  createdAt          DateTime @default(now())
-
-  @@index([source, region, vintage])
-  @@index([activityName])
-  @@index([materialClass, region])
-}
-
-model ProcessStep {
-  id             String  @id @default(uuid())
-  productId      String
-  product        Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  lifecycleStage String
-  siteId         String?
-  energyKwh      Float?
-  waterM3        Float?
-  wasteKg        Float?
-  emissionsKg    Float?
-  notes          String?
-
-  createdAt      DateTime @default(now())
-
-  @@index([productId, lifecycleStage])
-}
-
-model PcfCalculation {
-  id                String   @id @default(uuid())
-  productId         String
-  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  runAt             DateTime @default(now())
-  engineVersion     String
-  totalKgCo2e       Float
-  uncertaintyLow    Float?
-  uncertaintyHigh   Float?
-  primaryDataPct    Float    // computed share 0..1
-  breakdownByStage  Json     // { A1: 42.1, A2: 3.4, A3: 11.0, ... }
-  breakdownByComp   Json     // [{ componentId, kgCo2e, pct }]
-  factorSnapshot    Json     // which factor IDs + vintages were used
-  status            String   @default("draft") // draft | final | verified
-
-  verifications     PcfVerification[]
-
-  @@index([productId, runAt])
-}
-
-model PcfVerification {
-  id               String   @id @default(uuid())
-  calculationId    String
-  calculation      PcfCalculation @relation(fields: [calculationId], references: [id], onDelete: Cascade)
-  verifierName     String
-  verifierOrg      String?
-  verifiedAt       DateTime
-  standard         String   // ISO_14067 | PEF | GHG_Product
-  evidenceUrl      String?
-  notes            String?
-
-  createdAt        DateTime @default(now())
-}
-
-// ─── Sector Pack Framework (PCF-05) ─────────────────────────────
-// Sector packs are data, not code — loaded from backend/src/sectors/*/pack.json
-// at boot by sectorLoader.js.  Each pack bundles KPIs, materiality starters,
-// emission factors, and report templates.  Adding a new sector does NOT
-// require frontend changes.
-
-model SectorPack {
-  id          String      @id @default(uuid())
-  key         String      @unique  // electronics | automotive | real_estate | financial | generic
-  name        String
-  version     String
-  enabled     Boolean     @default(true)
-  manifest    Json
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  kpis        SectorKpi[]
-}
-
-model SectorKpi {
-  id            String     @id @default(uuid())
-  packId        String
-  pack          SectorPack @relation(fields: [packId], references: [id], onDelete: Cascade)
-  code          String     // TC-HW-410a.1
-  name          String
-  unit          String
-  framework     String     // SASB | ESRS | RBA | custom
-  category      String     // environmental | social | governance | product
-  formula       String?    // how to compute from existing data
-  aggregation   String?    // sum | avg | ratio
-  sortOrder     Int        @default(0)
-
-  @@unique([packId, code])
-}
-
-// One row per company — tracks which sector pack is currently active.
-// Selected at onboarding, switchable in Settings.
-model CompanySectorSelection {
-  companyId   String   @id
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  sectorKey   String
-  selectedAt  DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-// ─── Benchmark Cohorts (PCF-08) ─────────────────────────────────
-// Per-sector × KPI × region aggregated statistics.  Recomputed nightly
-// (or on demand) by `services/benchmarkEngine.js`.  k-anonymity: a row
-// only exists — and is only returned — when cohortSize ≥ K_MIN (10).
-// Cohorts with <50 contributors have small Laplace noise added to p50.
-model BenchmarkCohort {
-  id            String   @id @default(uuid())
-  sectorKey     String
-  kpiCode       String   // matches SectorKpi.code (or a product-level synthetic key)
-  region        String   // GLO for global, or ISO 2-letter / region code
-  cohortSize    Int      // number of unique companies contributing
-  p25           Float
-  p50           Float
-  p75           Float
-  unit          String
-  lastUpdatedAt DateTime @default(now())
-
-  @@unique([sectorKey, kpiCode, region])
-  @@index([sectorKey, region])
-}
-
-// ─── Saved What-If Scenarios (PCF-04 extension) ─────────────────
-// Allows users to save and revisit their what-if simulations.  Each
-// scenario belongs to a specific product and stores the overrides
-// as JSON + the last computed baseline/scenario results.
-model SavedScenario {
-  id             String   @id @default(uuid())
-  productId      String
-  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name           String
-  overrides      Json     // the full overrides object
-  baselineResult Json?    // last computed baseline snapshot
-  scenarioResult Json?    // last computed scenario snapshot
-  deltaKgCo2e    Float?
-  deltaPct       Float?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([productId])
-}
-
-// ─── Supplier Scope 3 Portal (SUP-01) ──────────────────────────
-// The supplier portal is a separate mini-app — suppliers receive an
-// email with a scoped, time-limited link, land on a branded mini-site,
-// submit data, and leave.  No Triple I account needed.  All data
-// flows into the buyer's Scope 3 inventory with primaryDataFlag=true.
-
-model Supplier {
-  id              String   @id @default(uuid())
-  buyerCompanyId  String
-  buyerCompany    Company  @relation(fields: [buyerCompanyId], references: [id], onDelete: Cascade)
-  name            String
-  contactEmail    String
-  country         String
-  annualSpendUsd  Float?
-  category        String?  // tier1_direct, tier1_indirect, logistics, services
-  riskScore       Float?
-  createdAt       DateTime @default(now())
-
-  requests        SupplierDataRequest[]
-
-  @@unique([buyerCompanyId, contactEmail])
-  @@index([buyerCompanyId])
-}
-
-model SupplierDataRequest {
-  id              String   @id @default(uuid())
-  supplierId      String
-  supplier        Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  reportingYear   Int
-  scope3Category  String   // cat1_purchased_goods, cat4_transportation, cat6_business_travel, etc.
-  status          String   @default("sent") // sent | opened | submitted | approved | rejected
-  token           String   @unique
-  tokenExpiresAt  DateTime
-  sentAt          DateTime @default(now())
-  submittedAt     DateTime?
-  approvedAt      DateTime?
-  submission      Json?    // the supplier's form payload
-  dataQuality     String?  // primary | spend_based | secondary
-
-  @@index([supplierId])
-  @@index([token])
-}
-
-// ─── Real Estate (RE-01) ────────────────────────────────────────
-// Asset-level granularity — each building is a reporting unit with its
-// own energy records, certifications, and CRREM stranding pathway.
-
-model RealEstateAsset {
-  id               String   @id @default(uuid())
-  companyId        String
-  company          Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  name             String
-  assetClass       String   // office | retail | residential | industrial | logistics | hotel | mixed | school | kindergarten | public_admin | healthcare | residential_multi
-  tenure           String   // owned | leased
-  grossFloorAreaM2 Float
-  netLeasableM2    Float?
-  yearBuilt        Int?
-  yearAcquired     Int?
-  country          String
-  city             String
-  latitude         Float?
-  longitude        Float?
-  certifications   Json?    // [{ scheme: "LEED", level: "Gold", year: 2021 }]
-  tenantCount      Int?
-  occupancyPct     Float?
-  // Building Energy page: intensity uses heatedAreaM2 when set, else gross.
-  heatedAreaM2       Float?
-  retrofitDate       DateTime?
-  retrofitDescription String?
-  retrofitCost       Float?
-  retrofitCurrency   String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  energyRecords    AssetEnergyRecord[]
-  crremPathways    AssetCrremPathway[]
-
-  @@index([companyId])
-  @@index([companyId, assetClass])
-}
-
-model AssetEnergyRecord {
-  id         String          @id @default(uuid())
-  assetId    String
-  asset      RealEstateAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  year       Int
-  month      Int?
-  fuel       String   // electricity | natural_gas | district_heat | district_cool | lpg | biomass | oil
-  quantity   Float
-  unit       String   // kWh | MWh | Gcal | m3 | litre | kg
-  cost       Float?
-  currency   String?
-  sourceDoc  String?
-  // Billing period for bills that do not align with calendar months;
-  // split pro rata by days across months.
-  periodStart DateTime?
-  periodEnd   DateTime?
+model ConsentRecord {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       String   // 'PRIVACY_NOTICE' | 'TERMS' | 'MARKETING'
+  version    String
+  granted    Boolean  @default(true)
+  ip         String?
   createdAt  DateTime @default(now())
 
-  @@index([assetId, year])
+  @@index([userId])
 }
 
-model AssetCrremPathway {
-  id                 String          @id @default(uuid())
-  assetId            String
-  asset              RealEstateAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  pathway            String   // 1.5C | 2.0C
-  strandedFromYear   Int?     // null = safe past 2050
-  currentKgCo2ePerM2 Float
-  updatedAt          DateTime @updatedAt
+// ─── Organisations & roles ───────────────────────────────────────
 
-  @@unique([assetId, pathway])
+model Organisation {
+  id                  String    @id @default(uuid())
+  legalNameEn         String
+  legalNameAr         String?
+  crNumber            String?   // Commercial Registration number
+  legalForm           String?   // LLC, SAOC, SAOG, Sole proprietorship, Branch...
+  activities          String?
+  address             String?
+  governorate         String?
+  fiscalYearEndMonth  Int       @default(12)
+  tin                 String?   // Tax Identification Number
+  vatNumber           String?   // OM + 10 characters
+  exciseNumber        String?
+  vatRegistered       Boolean   @default(false)
+  vatRegisteredAt     DateTime?
+  vatGroupRepId       String?   // representative member of a VAT group (E1-06)
+  annualSuppliesBaisa BigInt    @default(0) // declared / estimated annual taxable supplies
+  employees           Int       @default(0)
+  paidUpCapitalBaisa  BigInt    @default(0)
+  profile             Json      @default("{}") // onboarding questionnaire answers
+  obligationsSummary  Json      @default("[]") // last computed obligations with "why"
+  plan                String    @default("FREE") // FREE | SME | BUSINESS | PRACTITIONER | PERSONAL
+  isPractitionerFirm  Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  memberships   Membership[]
+  invitations   Invitation[]
+  obligations   Obligation[]
+  transactions  Transaction[]
+  importBatches ImportBatch[]
+  returns       TaxReturn[]
+  einvoices     EInvoice[]
+  parties       Party[]
+  whtPayments   WhtPayment[]
+  documents     TaxDocument[]
+  letters       TaxLetter[]
+  accountMaps   AccountMapping[]
+  supportGrants SupportAccessGrant[]
+  exciseItems   ExciseProduct[]
 }
 
-// ─── Financial Services (FS-01) ─────────────────────────────────
-// PCAF methodology: 7 asset classes, each with its own attribution
-// formula.  FinancialExposure holds the position; FinancedEmissionsCalc
-// holds the per-exposure computed financed emissions.
+// Roles (plan E0-05): OWNER, FINANCE_ADMIN, PREPARER, APPROVER, VIEWER, EXTERNAL_ACCOUNTANT, AUDITOR
+model Membership {
+  id             String       @id @default(uuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  role           String
+  status         String       @default("ACTIVE") // ACTIVE | REVOKED
+  invitedById    String?
+  createdAt      DateTime     @default(now())
 
-model FinancialExposure {
-  id                String   @id @default(uuid())
-  companyId         String
-  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  assetClass        String   // listed_equity | corp_bonds | business_loans | project_finance | commercial_re | mortgages | motor_vehicle_loans | sovereign
-  counterpartyName  String
-  counterpartyIsin  String?
-  counterpartyLei   String?
-  sector            String?  // NACE code
-  country           String?
-  outstandingAmount Float
-  currency          String
-  equityValue       Float?   // for attribution factor (listed equity)
-  totalBalanceSheet Float?   // for corp loans
-  epc               String?  // EPC rating for mortgages/CRE
-  evic              Float?   // enterprise value including cash
-  reportingYear     Int
-  dataQualityScore  Int      // PCAF 1 (best) to 5 (worst)
-  createdAt         DateTime @default(now())
-
-  financedEmissions FinancedEmissionsCalc[]
-
-  @@index([companyId, reportingYear])
-  @@index([companyId, assetClass])
+  @@unique([userId, organisationId])
 }
 
-model FinancedEmissionsCalc {
-  id                    String            @id @default(uuid())
-  exposureId            String
-  exposure              FinancialExposure @relation(fields: [exposureId], references: [id], onDelete: Cascade)
-  reportingYear         Int
-  attributionFactor     Float   // outstanding / EVIC or similar per PCAF
-  counterpartyScope1    Float?  // tCO2e total
-  counterpartyScope2    Float?
-  counterpartyScope3    Float?
-  financedScope1        Float
-  financedScope2        Float
-  financedScope3        Float?
-  waci                  Float?  // weighted avg carbon intensity
-  calcAt                DateTime @default(now())
-  factorSnapshot        Json
-
-  @@index([exposureId])
+model Invitation {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String
+  token          String       @unique
+  invitedById    String
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime     @default(now())
 }
 
-// ─── ISO → GRI Bridge ──────────────────────────────────────────
-// Maps ISO management system data outputs to GRI 2021 disclosures.
-// The mapping matrix is the canonical rule source; the classification
-// engine applies it to ingested ISO data to produce gap analysis and
-// GRI disclosure drafts.
-
-model IsoGriMappingRule {
-  id              String   @id @default(uuid())
-  isoStandard     String   // ISO_14001, ISO_45001, ISO_50001, ISO_14064, ISO_9001, ISO_27001, ISO_26000, ISO_20400
-  isoClause       String   // e.g., "6.1.2", "A.5"
-  isoDataCaptured String   // Human-readable description of what data the ISO clause produces
-  griCode         String   // e.g., "GRI 305-1", "GRI 403-2", "GRI 3-1"
-  coverageLevel   String   // FULL | PARTIAL | SUPPORTING
-  notes           String?  // Gaps, caveats, guidance
-  tripleIModule   String?  // Which Triple I module handles this data
-  version         String   @default("1.0")
-  createdAt       DateTime @default(now())
-
-  @@index([isoStandard, isoClause])
-  @@index([griCode])
-  @@index([version])
+// Just-in-time support access (E0-08): customer approves, time-boxed, every view logged.
+model SupportAccessGrant {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  staffUserId    String
+  reason         String
+  status         String       @default("REQUESTED") // REQUESTED | APPROVED | DENIED | REVOKED
+  approvedById   String?
+  expiresAt      DateTime?
+  createdAt      DateTime     @default(now())
 }
 
-// Per-company ISO data ingestion records — what ISO data the customer
-// has uploaded or connected.  Each record is classified against the
-// mapping rules to produce a GRI coverage assessment.
-model IsoDataIngestion {
-  id              String   @id @default(uuid())
-  companyId       String
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  isoStandard     String   // ISO_14001, ISO_45001, etc.
-  isoClause       String
-  dataDescription String?
-  dataValue       String?  // The actual data point or summary
-  sourceFile      String?  // Original file name
-  year            Int
-  classifiedGri   String?  // The GRI disclosure this was classified to
-  coverageLevel   String?  // FULL | PARTIAL | SUPPORTING (from the rule)
-  ruleVersion     String?  // Which rule version was used
-  createdAt       DateTime @default(now())
+// ─── Tax rules library (rules are data, not code — plan decision 5) ──
 
-  @@index([companyId, isoStandard])
-  @@index([companyId, classifiedGri])
+model TaxRule {
+  id             String    @id @default(uuid())
+  key            String    // e.g. 'vat.rates', 'cit.rates', 'deadlines.vat'
+  version        Int
+  effectiveFrom  DateTime
+  effectiveTo    DateTime?
+  value          Json
+  sourceCitation String
+  changeNote     String?
+  status         String    @default("DRAFT") // DRAFT | APPROVED | REJECTED
+  createdById    String?
+  approvedById   String?
+  approvedAt     DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@unique([key, version])
+  @@index([key, status])
 }
 
-// Public readiness assessment results — lead-gen questionnaire that
-// estimates GRI coverage based on ISO certifications and practices.
-// No authentication required; results are keyed by a shareable token.
-model ReadinessAssessment {
-  id              String   @id @default(uuid())
-  token           String   @unique @default(uuid())
-  contactName     String
-  contactEmail    String
-  companyName     String
-  phone           String?
-  answers         Json
-  overallScore    Float
-  topicScores     Json     // { "GRI 2": 15, "GRI 3": 30, ... }
-  recommendations Json?
-  createdAt       DateTime @default(now())
+// ─── Obligations & calendar (E2) ─────────────────────────────────
 
-  @@index([contactEmail])
+model Obligation {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  taxType        String       // VAT | CIT | WHT | EXCISE | PIT | EINVOICING | REGISTRATION | OTHER
+  title          String
+  titleAr        String?
+  periodStart    DateTime?
+  periodEnd      DateTime?
+  dueDate        DateTime
+  // NOT_STARTED → DATA_MISSING → READY_FOR_REVIEW → APPROVED → SUBMITTED → PAID → ACKNOWLEDGED
+  status         String       @default("NOT_STARTED")
+  ruleRef        String?
+  notes          String?
+  remindersSent  Json         @default("[]")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  returns        TaxReturn[]
+
+  @@unique([organisationId, taxType, periodStart, periodEnd])
+  @@index([organisationId, dueDate])
 }
 
-// Per-company GRI gap analysis snapshot — computed from the ingested
-// ISO data and the mapping rules.  Refreshed on each ingestion or
-// on-demand recalculation.
-model GriGapAnalysis {
-  id              String   @id @default(uuid())
-  companyId       String
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  griTopicFamily  String   // e.g., "GRI 305", "GRI 403", "GRI 302"
-  griCode         String   // Specific disclosure code
-  griName         String   // Human-readable name
-  status          String   // COVERED | PARTIAL | GAP
-  coveringSources Json?    // Array of { isoStandard, isoClause, coverageLevel }
-  recommendedAction String? // What the customer should do to close the gap
-  year            Int
-  computedAt      DateTime @default(now())
+// ─── Data ingestion (E3) ─────────────────────────────────────────
 
-  @@unique([companyId, griCode, year])
-  @@index([companyId, year])
+model ImportBatch {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  source         String       // EXCEL | CSV | MANUAL | FAWTARA | ERP
+  filename       String?
+  rowCount       Int          @default(0)
+  errorCount     Int          @default(0)
+  errors         Json         @default("[]")
+  createdById    String
+  createdAt      DateTime     @default(now())
+
+  transactions   Transaction[]
 }
 
-// ─── Sites & Geospatial Foundation ──────────────────────────────
-model Site {
-  id              String   @id @default(uuid())
-  companyId       String
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  orgUnitId       String?
-  orgUnit         OrgUnit? @relation(fields: [orgUnitId], references: [id])
-  name            String
-  siteType        String   // manufacturing | office | warehouse | retail | other
-  country         String
-  address         String?
-  latitude        Float?
-  longitude       Float?
-  waterStress     String?  // Low | Low-Medium | Medium-High | High | Extremely High (from WRI Aqueduct)
-  protectedArea   Json?    // { inProtectedArea: bool, nearbyAreas: [{ name, designation, distanceKm }] }
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Transaction {
+  id                 String       @id @default(uuid())
+  organisationId     String
+  organisation       Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  importBatchId      String?
+  importBatch        ImportBatch? @relation(fields: [importBatchId], references: [id], onDelete: SetNull)
+  direction          String       // SALE | PURCHASE
+  date               DateTime
+  invoiceNumber      String?
+  counterpartyName   String?
+  counterpartyVat    String?
+  counterpartyCountry String      @default("OM")
+  description        String?
+  accountCode        String?
+  netBaisa           BigInt
+  vatBaisa           BigInt       @default(0)
+  // STANDARD | ZERO_RATED | EXEMPT | OUT_OF_SCOPE | REVERSE_CHARGE
+  vatCategory        String?
+  categorySource     String?      // RULE | USER | IMPORT
+  isService          Boolean      @default(false)
+  isImport           Boolean      @default(false)
+  isCreditNote       Boolean      @default(false)
+  inputBlocked       Boolean      @default(false)
+  hasTaxInvoice      Boolean      @default(true)
+  flags              Json         @default("[]")
+  lockedByReturnId   String?
+  einvoiceId         String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 
-  waterActivities WaterActivity[]
-  biodiversityAssessments BiodiversityAssessment[]
-
-  @@unique([companyId, name])
-  @@index([companyId])
+  @@index([organisationId, date])
 }
 
-// ─── E3 Water Resources ─────────────────────────────────────────
-model WaterActivity {
-  id              String   @id @default(uuid())
-  companyId       String
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  siteId          String
-  site            Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  year            Int
-  month           Int?
-  source          String   // surface | ground | third_party | seawater | produced | rainwater
-  flowType        String   // withdrawal | discharge | consumption
-  quantity        Float    // in m³
-  unit            String   @default("m3")
-  destination     String?  // surface_water | groundwater | seawater | third_party | other
-  quality         String?  // freshwater | other_water
-  recycledReused  Boolean  @default(false)
-  sourceDoc       String?
-  createdAt       DateTime @default(now())
+model AccountMapping {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  accountCode    String
+  accountName    String?
+  taxCategory    String       // VAT category or CIT schedule line
+  history        Json         @default("[]")
+  updatedAt      DateTime     @updatedAt
 
-  @@index([companyId, year])
-  @@index([siteId, year])
+  @@unique([organisationId, accountCode])
 }
 
-// ─── E4 Biodiversity ────────────────────────────────────────────
-model BiodiversityAssessment {
-  id              String   @id @default(uuid())
-  companyId       String
-  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  siteId          String
-  site            Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  year            Int
-  assessmentType  String   // tnfd_leap | gri_101 | screening
-  leapPhase       String?  // locate | evaluate | assess | prepare
-  landAreaHa      Float?
-  landUseChange   String?  // converted | restored | maintained | degraded
-  ecosystemType   String?  // forest | wetland | grassland | marine | freshwater | urban | agricultural | other
-  directDrivers   Json?    // { landUseChange: bool, resourceExploitation: bool, climateChange: bool, pollution: bool, invasiveSpecies: bool }
-  ecosystemServices Json?  // structured questionnaire responses
-  peopleImpacts   Json?    // impacts on indigenous peoples / local communities
-  accessBenefitSharing Boolean? // genetic resources used?
-  status          String   @default("draft") // draft | complete | verified
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+// ─── Returns (VAT, CIT, WHT, EXCISE, PIT) with approval workflow (E4-07) ──
 
-  @@index([companyId, year])
-  @@index([siteId])
+model TaxReturn {
+  id              String       @id @default(uuid())
+  organisationId  String
+  organisation    Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  obligationId    String?
+  obligation      Obligation?  @relation(fields: [obligationId], references: [id], onDelete: SetNull)
+  taxType         String
+  periodStart     DateTime
+  periodEnd       DateTime
+  // DRAFT | IN_REVIEW | APPROVED | REJECTED | SUBMITTED | PAID
+  status          String       @default("DRAFT")
+  boxes           Json         @default("{}")
+  explanation     Json         @default("{}")
+  exceptions      Json         @default("[]")
+  inputs          Json         @default("{}") // stored inputs for reproducibility
+  ruleVersions    Json         @default("{}")
+  amountDueBaisa  BigInt       @default(0)
+  preparedById    String
+  submittedForReviewAt DateTime?
+  reviewedById    String?
+  reviewComment   String?
+  approvedAt      DateTime?
+  signatureHash   String?
+  submissionRef   String?
+  submittedAt     DateTime?
+  paymentRef      String?
+  paidAt          DateTime?
+  locked          Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([organisationId, taxType, periodStart])
+}
+
+// ─── Fawtara e-invoicing (E5) ────────────────────────────────────
+
+model Party {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  kind           String       // CUSTOMER | SUPPLIER | BOTH
+  nameEn         String
+  nameAr         String?
+  vatNumber      String?
+  crNumber       String?
+  country        String       @default("OM")
+  address        String?
+  city           String?
+  email          String?
+  peppolId       String?
+  hasOmanPE      Boolean      @default(false) // permanent establishment (WHT, E7-04)
+  residencyCertExpiry DateTime?
+  createdAt      DateTime     @default(now())
+
+  whtPayments    WhtPayment[]
+}
+
+model EInvoice {
+  id               String       @id @default(uuid())
+  organisationId   String
+  organisation     Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  direction        String       @default("OUTBOUND") // OUTBOUND | INBOUND
+  docType          String       @default("INVOICE")  // INVOICE | CREDIT_NOTE | DEBIT_NOTE
+  kind             String       @default("B2B")      // B2B | B2C
+  number           String
+  issueDate        DateTime
+  supplyDate       DateTime?
+  currency         String       @default("OMR")
+  buyer            Json         @default("{}")
+  seller           Json         @default("{}")
+  lines            Json         @default("[]")
+  netBaisa         BigInt       @default(0)
+  vatBaisa         BigInt       @default(0)
+  totalBaisa       BigInt       @default(0)
+  originalInvoiceId String?
+  originalNumber   String?
+  note             String?
+  // DRAFT | VALID | INVALID | SENT | ACCEPTED | REJECTED | DELIVERED | RECEIVED
+  status           String       @default("DRAFT")
+  validationErrors Json         @default("[]")
+  xml              String?
+  sha256           String?
+  qrPayload        String?
+  aspMessageId     String?
+  idempotencyKey   String?      @unique
+  statusHistory    Json         @default("[]")
+  createdById      String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@unique([organisationId, direction, number])
+}
+
+// ─── Withholding tax (E7) ────────────────────────────────────────
+
+model WhtPayment {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  partyId        String
+  party          Party        @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  paymentDate    DateTime
+  category       String       // ROYALTIES | INTEREST | DIVIDENDS | TECHNICAL_SERVICES | MANAGEMENT_FEES | SOFTWARE | RESEARCH | EQUIPMENT_RENTAL | OTHER
+  grossBaisa     BigInt
+  netOfTax       Boolean      @default(false) // contract says "net of tax" → gross-up
+  rateBp         Int          // basis points (1000 = 10%)
+  treatyApplied  Boolean      @default(false)
+  whtBaisa       BigInt
+  explanation    Json         @default("{}")
+  description    String?
+  createdAt      DateTime     @default(now())
+}
+
+// ─── Excise (E8) ─────────────────────────────────────────────────
+
+model ExciseProduct {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  sku            String
+  name           String
+  category       String       // key from rules library excise.categories
+  createdAt      DateTime     @default(now())
+
+  @@unique([organisationId, sku])
+}
+
+// ─── Document vault, letters (E1, E11) ───────────────────────────
+
+model TaxDocument {
+  id             String        @id @default(uuid())
+  organisationId String?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  ownerUserId    String?       // personal (PIT) documents
+  category       String        // CR_CERTIFICATE | TAX_CARD | VAT_CERTIFICATE | ACKNOWLEDGEMENT | PAYMENT_PROOF | LETTER | RECEIPT | FINANCIAL_STATEMENTS | RESIDENCY_CERT | OTHER
+  title          String
+  filename       String
+  mimeType       String
+  sizeBytes      Int
+  sha256         String
+  data           Bytes
+  expiresAt      DateTime?
+  relatedType    String?
+  relatedId      String?
+  uploadedById   String
+  createdAt      DateTime      @default(now())
+
+  @@index([organisationId, category])
+}
+
+model TaxLetter {
+  id             String       @id @default(uuid())
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  reference      String?
+  letterType     String       // INFORMATION_REQUEST | ASSESSMENT | AUDIT_NOTICE | PENALTY | REFUND | OTHER
+  subject        String
+  receivedAt     DateTime
+  responseDueAt  DateTime?
+  status         String       @default("OPEN") // OPEN | RESPONDED | OBJECTED | CLOSED
+  assigneeId     String?
+  notes          String?
+  documentId     String?
+  createdAt      DateTime     @default(now())
+}
+
+// ─── Personal income tax tracking (E9) ───────────────────────────
+
+model PitProfile {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taxYear     Int
+  data        Json     @default("{}") // incomes, deductions, travel log, foreign taxes
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, taxYear])
+}
+
+// ─── Notifications (E13) ─────────────────────────────────────────
+
+model Notification {
+  id             String    @id @default(uuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organisationId String?
+  type           String
+  title          String
+  body           String
+  link           String?
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+// ─── Immutable, hash-chained audit log (E0-07) ───────────────────
+
+model AuditLog {
+  seq            BigInt   @id @default(autoincrement())
+  organisationId String?
+  actorId        String?
+  actorLabel     String?
+  action         String
+  objectType     String?
+  objectId       String?
+  beforeHash     String?
+  afterHash      String?
+  details        Json     @default("{}")
+  ip             String?
+  userAgent      String?
+  prevHash       String
+  hash           String   @unique
+  createdAt      DateTime @default(now())
+
+  @@index([organisationId, createdAt])
 }

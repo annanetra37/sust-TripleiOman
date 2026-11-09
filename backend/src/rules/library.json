@@ -1,0 +1,238 @@
+{
+  "_readme": "Triple i Oman tax rules library v1. Rules are data, not code (plan decision 5). Each rule has an effective date and a source citation. Items with verify=true are [VERIFY] items from plan section 12 and MUST be confirmed with an Omani tax adviser before the related feature is relied on in production. On first boot these are seeded into the TaxRule table as APPROVED version 1; later changes go through four-eyes approval in the admin console.",
+  "rules": [
+    {
+      "key": "vat.rates",
+      "effectiveFrom": "2021-04-16",
+      "source": "Royal Decree 121/2020 (VAT Law); Executive Regulations 53/2021",
+      "value": { "standardBp": 500, "zeroBp": 0 }
+    },
+    {
+      "key": "vat.registration",
+      "effectiveFrom": "2021-04-16",
+      "source": "VAT Law RD 121/2020 Art. 19-20; Oman VAT taxpayer guide (2021)",
+      "value": {
+        "mandatoryThresholdBaisa": 38500000,
+        "voluntaryThresholdBaisa": 19250000,
+        "alertAtPercent": [80, 100],
+        "registerWithinDays": 30
+      }
+    },
+    {
+      "key": "vat.categories",
+      "effectiveFrom": "2021-04-16",
+      "source": "VAT Law RD 121/2020 Arts. 47-56 (exempt & zero-rated supplies); Executive Regulations 53/2021",
+      "verify": true,
+      "value": {
+        "STANDARD": { "rateBp": 500, "labelEn": "Standard rated (5%)", "labelAr": "خاضع للنسبة الأساسية (5%)" },
+        "ZERO_RATED": { "rateBp": 0, "labelEn": "Zero-rated (0%)", "labelAr": "خاضع لنسبة الصفر" },
+        "EXEMPT": { "rateBp": 0, "labelEn": "Exempt", "labelAr": "معفى" },
+        "OUT_OF_SCOPE": { "rateBp": 0, "labelEn": "Out of scope", "labelAr": "خارج النطاق" },
+        "REVERSE_CHARGE": { "rateBp": 500, "labelEn": "Reverse charge (imported services/goods)", "labelAr": "احتساب عكسي" },
+        "zeroRatedKeywords": ["export", "basic food", "food basket", "medicine", "medical equipment", "investment gold", "investment silver", "crude oil", "natural gas", "international transport", "air transport", "rescue aircraft", "تصدير", "أدوية", "سلة غذائية"],
+        "exemptKeywords": ["financial service", "interest", "healthcare", "medical service", "education", "tuition", "undeveloped land", "residential rent", "local passenger transport", "insurance premium", "خدمات مالية", "تعليم", "رعاية صحية", "إيجار سكني"],
+        "outOfScopeKeywords": ["salary", "wages", "dividend", "fine", "penalty", "government fee", "donation", "رواتب"]
+      }
+    },
+    {
+      "key": "vat.blockedInput",
+      "effectiveFrom": "2021-04-16",
+      "source": "Executive Regulations 53/2021 Art. 70 (non-deductible input tax)",
+      "verify": true,
+      "value": {
+        "keywords": ["entertainment", "hospitality", "personal use", "passenger car", "private vehicle", "alcohol", "tobacco", "staff housing", "recreation", "ضيافة", "ترفيه", "سيارة"],
+        "noteEn": "Input VAT on these items is typically not recoverable. Confirm the current list with your tax adviser.",
+        "noteAr": "ضريبة المدخلات على هذه البنود غير قابلة للاسترداد عادة. يرجى التأكد من القائمة الحالية مع مستشارك الضريبي."
+      }
+    },
+    {
+      "key": "vat.returnForm",
+      "effectiveFrom": "2021-04-16",
+      "source": "OTA VAT return form (TMS portal), layout as published 2021",
+      "verify": true,
+      "value": {
+        "boxes": [
+          { "id": "1a", "section": "Sales", "labelEn": "Supplies of goods/services taxed at 5%", "labelAr": "توريدات السلع/الخدمات الخاضعة لنسبة 5%", "kind": "value+tax" },
+          { "id": "1b", "section": "Sales", "labelEn": "Supplies of goods/services taxed at 0%", "labelAr": "توريدات خاضعة لنسبة الصفر", "kind": "value" },
+          { "id": "1c", "section": "Sales", "labelEn": "Exempt supplies", "labelAr": "توريدات معفاة", "kind": "value" },
+          { "id": "1d", "section": "Sales", "labelEn": "Supplies subject to reverse charge (customer accounts for VAT)", "labelAr": "توريدات خاضعة للاحتساب العكسي", "kind": "value" },
+          { "id": "1e", "section": "Sales", "labelEn": "Out of scope supplies", "labelAr": "توريدات خارج النطاق", "kind": "value" },
+          { "id": "2a", "section": "Purchases subject to reverse charge", "labelEn": "Purchases subject to reverse charge (imported services)", "labelAr": "مشتريات خاضعة للاحتساب العكسي", "kind": "value+tax" },
+          { "id": "3a", "section": "Imports", "labelEn": "Import of goods (VAT postponed / deferred)", "labelAr": "استيراد السلع (ضريبة مؤجلة)", "kind": "value+tax" },
+          { "id": "4a", "section": "Total output VAT", "labelEn": "Total VAT due (1a + 2a + 3a)", "labelAr": "إجمالي ضريبة المخرجات المستحقة", "kind": "tax" },
+          { "id": "5a", "section": "Input VAT", "labelEn": "Purchases (except imports) — recoverable input VAT", "labelAr": "المشتريات (عدا الاستيراد) — ضريبة مدخلات قابلة للخصم", "kind": "value+tax" },
+          { "id": "5b", "section": "Input VAT", "labelEn": "Imports of goods — recoverable input VAT", "labelAr": "استيراد السلع — ضريبة مدخلات قابلة للخصم", "kind": "value+tax" },
+          { "id": "5c", "section": "Input VAT", "labelEn": "Reverse charge purchases — recoverable input VAT", "labelAr": "مشتريات الاحتساب العكسي — ضريبة مدخلات قابلة للخصم", "kind": "value+tax" },
+          { "id": "5d", "section": "Input VAT", "labelEn": "Total recoverable input VAT", "labelAr": "إجمالي ضريبة المدخلات القابلة للخصم", "kind": "tax" },
+          { "id": "6a", "section": "Net VAT", "labelEn": "Net VAT payable / (refundable) (4a − 5d)", "labelAr": "صافي الضريبة المستحقة / (المستردة)", "kind": "tax" }
+        ]
+      }
+    },
+    {
+      "key": "deadlines.vat",
+      "effectiveFrom": "2021-04-16",
+      "source": "VAT Law RD 121/2020 Art. 72 (return and payment within 30 days after the end of the tax period)",
+      "value": { "periodMonths": 3, "dueDaysAfterPeriodEnd": 30 }
+    },
+    {
+      "key": "deadlines.cit",
+      "effectiveFrom": "2021-01-01",
+      "source": "Income Tax Law RD 28/2009 as amended by RD 118/2020 (single annual return)",
+      "value": { "dueMonthsAfterYearEnd": 4, "smallEnterpriseDueMonthsAfterYearEnd": 3 }
+    },
+    {
+      "key": "deadlines.wht",
+      "effectiveFrom": "2020-01-01",
+      "source": "Income Tax Law RD 28/2009 Art. 52 bis (withholding remitted by end of the month following deduction)",
+      "verify": true,
+      "value": { "dueDaysAfterMonthEnd": 14 }
+    },
+    {
+      "key": "deadlines.excise",
+      "effectiveFrom": "2019-06-15",
+      "source": "Excise Tax Law RD 23/2019; Executive Regulations 2019",
+      "verify": true,
+      "value": { "periodMonths": 3, "dueDaysAfterPeriodEnd": 30 }
+    },
+    {
+      "key": "deadlines.pit",
+      "effectiveFrom": "2028-01-01",
+      "source": "Personal Income Tax Law RD 56/2025",
+      "value": { "dueMonthsAfterYearEnd": 6 }
+    },
+    {
+      "key": "deadlines.reminders",
+      "effectiveFrom": "2021-01-01",
+      "source": "Triple i Oman product policy (plan E2-02)",
+      "value": { "daysBefore": [30, 14, 7, 1], "escalateIfNotApprovedDaysBefore": 3 }
+    },
+    {
+      "key": "calendar.oman",
+      "effectiveFrom": "2021-01-01",
+      "source": "Oman weekend Friday-Saturday (since 2013); public holidays per Diwan of Royal Court announcements",
+      "verify": true,
+      "value": {
+        "weekendDays": [5, 6],
+        "shiftRule": "NEXT_WORKING_DAY",
+        "holidays": ["2026-01-03","2026-01-14","2026-03-20","2026-03-21","2026-03-22","2026-05-26","2026-05-27","2026-05-28","2026-05-29","2026-06-16","2026-08-25","2026-11-18","2026-11-19","2027-01-14","2027-03-09","2027-03-10","2027-03-11","2027-05-16","2027-05-17","2027-05-18","2027-06-06","2027-08-15","2027-11-18","2027-11-19"]
+      }
+    },
+    {
+      "key": "einvoicing.waves",
+      "effectiveFrom": "2026-08-09",
+      "source": "Ministerial Decision 189/2026 amending the VAT Executive Regulations (Fawtara)",
+      "value": {
+        "largeThresholdBaisa": 5000000000,
+        "waves": [
+          { "id": "PILOT", "date": "2026-08-01", "labelEn": "Voluntary pilot (selected large taxpayers)", "labelAr": "المرحلة التجريبية الطوعية" },
+          { "id": "WAVE1", "date": "2027-04-01", "labelEn": "Mandatory: annual supplies above OMR 5 million", "labelAr": "إلزامي: توريدات سنوية تتجاوز 5 ملايين ريال" },
+          { "id": "WAVE2", "date": "2027-10-01", "labelEn": "Mandatory: all other VAT-registered taxpayers", "labelAr": "إلزامي: جميع المسجلين الآخرين في ضريبة القيمة المضافة" }
+        ]
+      }
+    },
+    {
+      "key": "einvoicing.spec",
+      "effectiveFrom": "2026-06-28",
+      "source": "Fawtara PINT OM specification (Peppol International invoice — Oman), UBL 2.1",
+      "verify": true,
+      "value": {
+        "customizationId": "urn:peppol:pint:billing-1@om-1",
+        "profileId": "urn:peppol:bis:billing",
+        "invoiceTypeCodes": { "INVOICE": "380", "CREDIT_NOTE": "381", "DEBIT_NOTE": "383" },
+        "taxCategoryCodes": { "STANDARD": "S", "ZERO_RATED": "Z", "EXEMPT": "E", "OUT_OF_SCOPE": "O", "REVERSE_CHARGE": "AE" },
+        "issueWithinDays": 15,
+        "archiveYears": 10
+      }
+    },
+    {
+      "key": "cit.rates",
+      "effectiveFrom": "2017-01-01",
+      "source": "Income Tax Law RD 28/2009 as amended by RD 9/2017",
+      "value": { "standardBp": 1500, "smallEnterpriseBp": 300 }
+    },
+    {
+      "key": "cit.smallEnterprise",
+      "effectiveFrom": "2017-01-01",
+      "source": "Income Tax Law Art. 129 bis (conditions for 3% rate) — thresholds as commonly reported",
+      "verify": true,
+      "value": {
+        "maxPaidUpCapitalBaisa": 50000000,
+        "maxGrossIncomeBaisa": 100000000,
+        "maxAverageEmployees": 15,
+        "excludedActivities": ["banking", "insurance", "air transport", "land transport", "oil and gas", "mining", "petroleum products", "shipping"],
+        "requiresOmaniOwnedCompanyOrSoleProprietor": true
+      }
+    },
+    {
+      "key": "cit.losses",
+      "effectiveFrom": "2017-01-01",
+      "source": "Income Tax Law Art. 66 (carry-forward of tax losses)",
+      "verify": true,
+      "value": { "carryForwardYears": 5, "smallEnterpriseCarryForward": false }
+    },
+    {
+      "key": "wht.rates",
+      "effectiveFrom": "2019-02-01",
+      "source": "Income Tax Law RD 28/2009 Art. 52 bis as amended by RD 9/2017; dividends/interest WHT suspended 2020-2023 by RD 2020 — check current status",
+      "verify": true,
+      "value": {
+        "defaultBp": 1000,
+        "categories": {
+          "ROYALTIES": { "rateBp": 1000, "labelEn": "Royalties", "labelAr": "إتاوات" },
+          "TECHNICAL_SERVICES": { "rateBp": 1000, "labelEn": "Consideration for services", "labelAr": "مقابل الخدمات" },
+          "MANAGEMENT_FEES": { "rateBp": 1000, "labelEn": "Management fees", "labelAr": "رسوم الإدارة" },
+          "RESEARCH": { "rateBp": 1000, "labelEn": "Research & development", "labelAr": "البحث والتطوير" },
+          "SOFTWARE": { "rateBp": 1000, "labelEn": "Use of computer software", "labelAr": "استخدام برامج الحاسب" },
+          "EQUIPMENT_RENTAL": { "rateBp": 1000, "labelEn": "Rental of equipment", "labelAr": "تأجير المعدات" },
+          "DIVIDENDS": { "rateBp": 1000, "labelEn": "Dividends", "labelAr": "أرباح الأسهم" },
+          "INTEREST": { "rateBp": 1000, "labelEn": "Interest", "labelAr": "الفوائد" },
+          "OTHER": { "rateBp": 0, "labelEn": "Other (not subject to WHT)", "labelAr": "أخرى (غير خاضعة)" }
+        },
+        "treaties": {
+          "IN": { "country": "India", "ROYALTIES": 1000, "INTEREST": 1000, "DIVIDENDS": 1000 },
+          "GB": { "country": "United Kingdom", "ROYALTIES": 800, "INTEREST": 0, "DIVIDENDS": 0 },
+          "FR": { "country": "France", "ROYALTIES": 700, "INTEREST": 0, "DIVIDENDS": 0 },
+          "NL": { "country": "Netherlands", "ROYALTIES": 800, "INTEREST": 0, "DIVIDENDS": 0 },
+          "SG": { "country": "Singapore", "ROYALTIES": 800, "INTEREST": 700, "DIVIDENDS": 0 },
+          "CN": { "country": "China", "ROYALTIES": 1000, "INTEREST": 1000, "DIVIDENDS": 500 },
+          "AE": { "country": "United Arab Emirates", "ROYALTIES": 0, "INTEREST": 0, "DIVIDENDS": 0 }
+        }
+      }
+    },
+    {
+      "key": "excise.categories",
+      "effectiveFrom": "2019-06-15",
+      "source": "Excise Tax Law RD 23/2019 and Executive Regulations; sweetened drinks added Oct 2020",
+      "verify": true,
+      "value": {
+        "TOBACCO": { "rateBp": 10000, "labelEn": "Tobacco & tobacco products", "labelAr": "التبغ ومنتجاته", "stamps": true },
+        "ENERGY_DRINKS": { "rateBp": 10000, "labelEn": "Energy drinks", "labelAr": "مشروبات الطاقة", "stamps": true },
+        "PORK": { "rateBp": 10000, "labelEn": "Pork products", "labelAr": "منتجات لحم الخنزير", "stamps": false },
+        "ALCOHOL": { "rateBp": 10000, "labelEn": "Alcoholic beverages", "labelAr": "المشروبات الكحولية", "stamps": true },
+        "CARBONATED": { "rateBp": 5000, "labelEn": "Carbonated drinks", "labelAr": "المشروبات الغازية", "stamps": false },
+        "SWEETENED": { "rateBp": 5000, "labelEn": "Sweetened drinks", "labelAr": "المشروبات المحلاة", "stamps": true }
+      }
+    },
+    {
+      "key": "pit.rates",
+      "effectiveFrom": "2028-01-01",
+      "source": "Personal Income Tax Law RD 56/2025 (executive regulations pending)",
+      "verify": true,
+      "value": {
+        "rateBp": 500,
+        "thresholdBaisa": 42000000,
+        "residencyDays": 183,
+        "lateMonthlyAdditionalBp": 100,
+        "deductionCategories": ["EDUCATION", "HEALTHCARE", "PRIMARY_HOUSING", "ZAKAT", "DONATIONS", "INHERITANCE"],
+        "incomeCategories": ["EMPLOYMENT", "RENTAL", "SELF_EMPLOYMENT", "DIVIDENDS", "INTEREST", "ROYALTIES", "CAPITAL_GAINS", "OTHER"]
+      }
+    },
+    {
+      "key": "registration.vatNumberFormat",
+      "effectiveFrom": "2021-04-16",
+      "source": "OTA VAT registration certificate format",
+      "verify": true,
+      "value": { "pattern": "^OM[0-9A-Z]{10}$" }
+    }
+  ]
+}

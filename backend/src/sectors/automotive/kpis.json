@@ -1,0 +1,174 @@
+[
+  {
+    "code": "TR-AU-410a.1",
+    "name": "Sales-weighted average passenger vehicle fleet fuel economy (by region)",
+    "unit": "g CO2/km",
+    "framework": "SASB",
+    "category": "product",
+    "formula": "weighted_avg(vehicle.co2_gkm by vehicle.sales)",
+    "aggregation": "avg",
+    "sortOrder": 10
+  },
+  {
+    "code": "TR-AU-410a.2",
+    "name": "Number of (1) zero-emission vehicles (ZEV) and (2) hybrid vehicles sold",
+    "unit": "count",
+    "framework": "SASB",
+    "category": "product",
+    "sortOrder": 20
+  },
+  {
+    "code": "TR-AU-410a.3",
+    "name": "Discussion of strategy for managing fleet fuel economy and emissions risks",
+    "unit": "narrative",
+    "framework": "SASB",
+    "category": "product",
+    "sortOrder": 30
+  },
+  {
+    "code": "ZEV-SHARE",
+    "name": "Zero-emission vehicle share of total sales",
+    "unit": "%",
+    "framework": "EU_FLEET_CO2",
+    "category": "product",
+    "sortOrder": 40
+  },
+  {
+    "code": "FLEET-CO2-TARGET",
+    "name": "EU fleet CO2 target compliance gap (g CO2/km vs. target)",
+    "unit": "g CO2/km",
+    "framework": "EU_FLEET_CO2",
+    "category": "product",
+    "sortOrder": 50
+  },
+  {
+    "code": "TR-AU-250a.1",
+    "name": "NCAP 5-star safety rating percentage by region",
+    "unit": "%",
+    "framework": "SASB",
+    "category": "social",
+    "sortOrder": 60
+  },
+  {
+    "code": "TR-AU-250a.2",
+    "name": "Number of safety-related defect complaints and voluntary/involuntary recalls",
+    "unit": "count",
+    "framework": "SASB",
+    "category": "social",
+    "sortOrder": 70
+  },
+  {
+    "code": "TR-AU-310a.1",
+    "name": "Percentage of active workforce covered under collective bargaining agreements",
+    "unit": "%",
+    "framework": "SASB",
+    "category": "social",
+    "sortOrder": 80
+  },
+  {
+    "code": "TR-AU-310a.2",
+    "name": "Work stoppages: (1) number, (2) total idle days",
+    "unit": "count; days",
+    "framework": "SASB",
+    "category": "social",
+    "sortOrder": 90
+  },
+  {
+    "code": "TR-AU-440a.1",
+    "name": "Description of the management of risks associated with the use of critical materials",
+    "unit": "narrative",
+    "framework": "SASB",
+    "category": "environmental",
+    "sortOrder": 100
+  },
+  {
+    "code": "BATTERY-PCF",
+    "name": "Battery pack carbon footprint per kWh capacity (EU Battery Regulation)",
+    "unit": "kgCO2e/kWh",
+    "framework": "EU_BATTERY_REG",
+    "category": "product",
+    "formula": "avg(pcfCalculation.totalKgCo2e where product.sector='automotive' and product.functionalUnit like '%battery%')",
+    "aggregation": "avg",
+    "sortOrder": 110
+  },
+  {
+    "code": "BATTERY-RECYCLED",
+    "name": "Recycled content share in battery active materials (Co, Li, Ni, Pb)",
+    "unit": "%",
+    "framework": "EU_BATTERY_REG",
+    "category": "product",
+    "sortOrder": 120
+  },
+  {
+    "code": "USE-PHASE-SHARE",
+    "name": "Use-phase emissions as share of total lifecycle (fleet average)",
+    "unit": "%",
+    "framework": "ESRS_E1",
+    "category": "environmental",
+    "sortOrder": 130
+  },
+  {
+    "code": "SCOPE3-SUPPLY-CHAIN",
+    "name": "Scope 3 upstream supply chain emissions (purchased goods & services)",
+    "unit": "tCO2e",
+    "framework": "ESRS_E1",
+    "category": "environmental",
+    "formula": "sum(fE1.totalEmissions where scope='Scope 3')",
+    "aggregation": "sum",
+    "sortOrder": 140
+  },
+  {
+    "code": "E1-TOTAL-AUTO",
+    "name": "Total GHG emissions (Scope 1+2+3)",
+    "unit": "tCO2e",
+    "framework": "ESRS_E1",
+    "category": "environmental",
+    "formula": "sum(fE1.totalEmissions)",
+    "aggregation": "sum",
+    "sortOrder": 150
+  },
+  {
+    "code": "CATENA-X-READY",
+    "name": "Products with Catena-X-compatible PCF data exchange capability",
+    "unit": "count",
+    "framework": "CATENA_X",
+    "category": "product",
+    "formula": "count(product where has_pcf=true and sector='automotive')",
+    "aggregation": "sum",
+    "sortOrder": 160
+  },
+  {
+    "code": "SUPPLIER-PRIMARY-DATA",
+    "name": "Share of Scope 3 Category 1 covered by primary supplier data",
+    "unit": "%",
+    "framework": "CATENA_X",
+    "category": "environmental",
+    "sortOrder": 170
+  },
+  {
+    "code": "E5-ELV-RECOVERY",
+    "name": "End-of-Life Vehicle recovery/recycling rate",
+    "unit": "%",
+    "framework": "ESRS_E5",
+    "category": "environmental",
+    "sortOrder": 180
+  },
+  {
+    "code": "PCF-COVERAGE-AUTO",
+    "name": "Per-SKU PCF coverage (share of product lines with calculated footprint)",
+    "unit": "%",
+    "framework": "custom",
+    "category": "product",
+    "formula": "sum(product.revenue where has_pcf=true) / sum(product.revenue)",
+    "aggregation": "ratio",
+    "sortOrder": 190
+  },
+  {
+    "code": "ENERGY-INTENSITY-PLANT",
+    "name": "Energy intensity per vehicle produced (manufacturing sites)",
+    "unit": "MWh/vehicle",
+    "framework": "ESRS_E1",
+    "category": "environmental",
+    "sortOrder": 200
+  }
+]

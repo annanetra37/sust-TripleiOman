@@ -1,0 +1,14 @@
+{
+  "key": "electronics",
+  "name": "Electronics & Semiconductors",
+  "version": "1.0.0",
+  "description": "Sector pack for EMS, semiconductor, hardware, and electronics manufacturers. Covers SASB TC-HW / TC-SC, ESRS E1/E5, RBA Code of Conduct, Conflict Minerals, and RoHS/REACH disclosures.",
+  "frameworks": ["SASB_TC_HW", "SASB_TC_SC", "ESRS_E1", "ESRS_E5", "RBA", "CONFLICT_MINERALS", "ROHS_REACH"],
+  "lifecycleStagesActive": ["A1", "A2", "A3", "A4", "B1", "C1"],
+  "functionalUnits": ["1 SSD module", "1 DRAM module", "1 PCB", "1 power supply unit", "1 piece"],
+  "reportTemplates": ["sasb-tc-hw", "sasb-tc-sc", "esrs-e1-supplement"],
+  "license": {
+    "factorsSource": ["Ecoinvent 3.10 (public subset)", "DEFRA 2024"],
+    "note": "Factors bundled in this pack are either public-domain or licensed for Triple I distribution. See SECTOR_PACK_LICENSE.md."
+  }
+}

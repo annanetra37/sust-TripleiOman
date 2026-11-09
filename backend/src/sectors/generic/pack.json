@@ -1,0 +1,11 @@
+{
+  "key": "generic",
+  "name": "Generic (no sector specialisation)",
+  "version": "1.0.0",
+  "description": "Default pack for companies without a sector specialisation. Provides only the cross-cutting GRI / ESRS disclosures already bundled in the core platform.",
+  "frameworks": ["GRI", "ESRS_E1", "ESRS_S1"],
+  "lifecycleStagesActive": ["A1", "A2", "A3"],
+  "functionalUnits": ["1 piece"],
+  "reportTemplates": [],
+  "license": { "factorsSource": ["DEFRA 2024"], "note": "Core only." }
+}

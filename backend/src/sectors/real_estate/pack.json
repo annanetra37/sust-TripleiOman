@@ -1,0 +1,14 @@
+{
+  "key": "real_estate",
+  "name": "Real Estate & Infrastructure",
+  "version": "1.0.0",
+  "description": "Sector pack for real estate investors, asset managers, and property companies. Covers GRESB, ESRS E1, CRREM decarbonisation pathways, EU Taxonomy alignment, and SFDR disclosures.",
+  "frameworks": ["GRESB", "ESRS_E1", "CRREM", "EU_TAXONOMY", "SFDR"],
+  "lifecycleStagesActive": ["B6", "A1", "A2", "A3"],
+  "functionalUnits": ["1 m2 leasable", "1 building", "1 portfolio"],
+  "reportTemplates": ["gresb-assessment", "crrem-pathway", "esrs-e1-supplement"],
+  "license": {
+    "factorsSource": ["DEFRA 2024", "IEA 2024 (public subset)", "RICS Whole Life Carbon 2024"],
+    "note": "Factors bundled in this pack are either public-domain or licensed for Triple I distribution. See SECTOR_PACK_LICENSE.md."
+  }
+}

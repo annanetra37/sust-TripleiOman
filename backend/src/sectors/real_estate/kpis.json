@@ -1,0 +1,199 @@
+[
+  {
+    "code": "GRESB-EUI",
+    "name": "Energy use intensity",
+    "unit": "kWh/m2",
+    "framework": "GRESB",
+    "category": "environmental",
+    "formula": "sum(energy.consumption_kWh) / sum(asset.leasableArea_m2)",
+    "aggregation": "ratio",
+    "sortOrder": 10
+  },
+  {
+    "code": "GRESB-GHG-INT",
+    "name": "GHG intensity",
+    "unit": "kgCO2e/m2",
+    "framework": "GRESB",
+    "category": "environmental",
+    "formula": "sum(ghg.scope1 + ghg.scope2) / sum(asset.leasableArea_m2)",
+    "aggregation": "ratio",
+    "sortOrder": 20
+  },
+  {
+    "code": "GRESB-WATER-INT",
+    "name": "Water intensity",
+    "unit": "L/m2",
+    "framework": "GRESB",
+    "category": "environmental",
+    "formula": "sum(water.consumption_L) / sum(asset.leasableArea_m2)",
+    "aggregation": "ratio",
+    "sortOrder": 30
+  },
+  {
+    "code": "GRESB-WASTE-DIV",
+    "name": "Waste diversion rate",
+    "unit": "%",
+    "framework": "GRESB",
+    "category": "environmental",
+    "formula": "sum(waste.diverted_t) / sum(waste.total_t)",
+    "aggregation": "ratio",
+    "sortOrder": 40
+  },
+  {
+    "code": "GRESB-GREEN-CERT",
+    "name": "Green-certified share of portfolio",
+    "unit": "%",
+    "framework": "GRESB",
+    "category": "environmental",
+    "formula": "sum(asset.leasableArea_m2 where greenCertified=true) / sum(asset.leasableArea_m2)",
+    "aggregation": "ratio",
+    "sortOrder": 50
+  },
+  {
+    "code": "GRESB-SCORE",
+    "name": "GRESB score proxy",
+    "unit": "score (0-100)",
+    "framework": "GRESB",
+    "category": "environmental",
+    "aggregation": "avg",
+    "sortOrder": 60
+  },
+  {
+    "code": "CRREM-STRAND-YR",
+    "name": "Stranding year",
+    "unit": "year",
+    "framework": "CRREM",
+    "category": "environmental",
+    "aggregation": "min",
+    "sortOrder": 70
+  },
+  {
+    "code": "CRREM-DTP",
+    "name": "Distance-to-pathway",
+    "unit": "kgCO2e/m2",
+    "framework": "CRREM",
+    "category": "environmental",
+    "formula": "asset.ghgIntensity - crrem.pathwayTarget",
+    "aggregation": "avg",
+    "sortOrder": 80
+  },
+  {
+    "code": "ESRS-S12-TOTAL",
+    "name": "Total Scope 1+2 emissions",
+    "unit": "tCO2e",
+    "framework": "ESRS_E1",
+    "category": "environmental",
+    "formula": "sum(ghg.scope1 + ghg.scope2)",
+    "aggregation": "sum",
+    "sortOrder": 90
+  },
+  {
+    "code": "ESRS-S3-TENANT",
+    "name": "Scope 3 tenant energy emissions",
+    "unit": "tCO2e",
+    "framework": "ESRS_E1",
+    "category": "environmental",
+    "formula": "sum(ghg.scope3_tenant_energy)",
+    "aggregation": "sum",
+    "sortOrder": 100
+  },
+  {
+    "code": "TAXO-ALIGNED",
+    "name": "EU Taxonomy aligned share of portfolio",
+    "unit": "%",
+    "framework": "EU_TAXONOMY",
+    "category": "environmental",
+    "formula": "sum(asset.GAV where taxonomyAligned=true) / sum(asset.GAV)",
+    "aggregation": "ratio",
+    "sortOrder": 110
+  },
+  {
+    "code": "TAXO-CAPEX-EE",
+    "name": "CapEx in energy efficiency",
+    "unit": "%",
+    "framework": "EU_TAXONOMY",
+    "category": "environmental",
+    "formula": "sum(capex.energyEfficiency) / sum(capex.total)",
+    "aggregation": "ratio",
+    "sortOrder": 120
+  },
+  {
+    "code": "RE-OCC-RATE",
+    "name": "Occupancy rate",
+    "unit": "%",
+    "framework": "GRESB",
+    "category": "operational",
+    "formula": "sum(asset.occupiedArea_m2) / sum(asset.leasableArea_m2)",
+    "aggregation": "ratio",
+    "sortOrder": 130
+  },
+  {
+    "code": "RE-AVG-EPC",
+    "name": "Average EPC rating",
+    "unit": "rating (A-G)",
+    "framework": "ESRS_E1",
+    "category": "operational",
+    "aggregation": "avg",
+    "sortOrder": 140
+  },
+  {
+    "code": "SFDR-PAI1-RE",
+    "name": "GHG emissions (PAI 1) — real estate portfolio",
+    "unit": "tCO2e",
+    "framework": "SFDR",
+    "category": "environmental",
+    "formula": "sum(ghg.scope1 + ghg.scope2 + ghg.scope3)",
+    "aggregation": "sum",
+    "sortOrder": 150
+  },
+  {
+    "code": "SFDR-PAI2-RE",
+    "name": "Carbon footprint (PAI 2) — real estate portfolio",
+    "unit": "tCO2e/EUR M GAV",
+    "framework": "SFDR",
+    "category": "environmental",
+    "formula": "sum(ghg.scope1 + ghg.scope2) / (sum(asset.GAV) / 1e6)",
+    "aggregation": "ratio",
+    "sortOrder": 160
+  },
+  {
+    "code": "RE-EMBODIED-INT",
+    "name": "Embodied carbon intensity of new developments",
+    "unit": "kgCO2e/m2",
+    "framework": "ESRS_E1",
+    "category": "environmental",
+    "formula": "sum(development.embodiedCarbon) / sum(development.GIA_m2)",
+    "aggregation": "ratio",
+    "sortOrder": 170
+  },
+  {
+    "code": "RE-RENEWABLE-SHARE",
+    "name": "Renewable energy share of portfolio consumption",
+    "unit": "%",
+    "framework": "GRESB",
+    "category": "environmental",
+    "formula": "sum(energy.renewable_kWh) / sum(energy.consumption_kWh)",
+    "aggregation": "ratio",
+    "sortOrder": 180
+  },
+  {
+    "code": "RE-FLOOD-EXPO",
+    "name": "Share of portfolio exposed to 1-in-100-year flood zone",
+    "unit": "%",
+    "framework": "CRREM",
+    "category": "environmental",
+    "formula": "sum(asset.GAV where floodZone100yr=true) / sum(asset.GAV)",
+    "aggregation": "ratio",
+    "sortOrder": 190
+  },
+  {
+    "code": "RE-GREEN-LEASE",
+    "name": "Share of leases with green lease clauses",
+    "unit": "%",
+    "framework": "GRESB",
+    "category": "operational",
+    "formula": "sum(lease.count where greenClause=true) / sum(lease.count)",
+    "aggregation": "ratio",
+    "sortOrder": 200
+  }
+]

@@ -1,0 +1,520 @@
+{
+ "_readme": "ILLUSTRATIVE DATA ONLY \u2014 shape for testing the seed script. Not real bills. Replace with the building facts and 24+ months of bills supplied/approved by the Foundation to Save Energy, saved as buildingDemo.data.json.",
+ "illustrative": true,
+ "building": {
+  "name": "Community School",
+  "assetClass": "school",
+  "country": "AM",
+  "city": "Lori region",
+  "grossFloorAreaM2": 1600,
+  "heatedAreaM2": 1450,
+  "yearBuilt": 1972,
+  "tenure": "owned",
+  "retrofitDate": "2024-08-15",
+  "retrofitDescription": "Thermal insulation of walls and roof; window replacement",
+  "retrofitCost": null,
+  "retrofitCurrency": "AMD"
+ },
+ "records": [
+  {
+   "year": 2023,
+   "month": 8,
+   "fuel": "natural_gas",
+   "quantity": 150,
+   "unit": "m3",
+   "cost": 22500,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2023-08.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 8,
+   "fuel": "electricity",
+   "quantity": 1300,
+   "unit": "kWh",
+   "cost": 62400,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2023-08.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 9,
+   "fuel": "natural_gas",
+   "quantity": 350,
+   "unit": "m3",
+   "cost": 52500,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2023-09.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 9,
+   "fuel": "electricity",
+   "quantity": 3300,
+   "unit": "kWh",
+   "cost": 158400,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2023-09.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 10,
+   "fuel": "natural_gas",
+   "quantity": 1900,
+   "unit": "m3",
+   "cost": 285000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2023-10.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 10,
+   "fuel": "electricity",
+   "quantity": 3500,
+   "unit": "kWh",
+   "cost": 168000,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2023-10.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 11,
+   "fuel": "natural_gas",
+   "quantity": 4100,
+   "unit": "m3",
+   "cost": 615000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2023-11.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 11,
+   "fuel": "electricity",
+   "quantity": 3600,
+   "unit": "kWh",
+   "cost": 172800,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2023-11.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 12,
+   "fuel": "natural_gas",
+   "quantity": 5800,
+   "unit": "m3",
+   "cost": 870000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2023-12.pdf"
+  },
+  {
+   "year": 2023,
+   "month": 12,
+   "fuel": "electricity",
+   "quantity": 3700,
+   "unit": "kWh",
+   "cost": 177600,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2023-12.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 1,
+   "fuel": "natural_gas",
+   "quantity": 6200,
+   "unit": "m3",
+   "cost": 930000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-01.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 1,
+   "fuel": "electricity",
+   "quantity": 3600,
+   "unit": "kWh",
+   "cost": 172800,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-01.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 2,
+   "fuel": "natural_gas",
+   "quantity": 5600,
+   "unit": "m3",
+   "cost": 840000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-02.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 2,
+   "fuel": "electricity",
+   "quantity": 3500,
+   "unit": "kWh",
+   "cost": 168000,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-02.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 3,
+   "fuel": "natural_gas",
+   "quantity": 4300,
+   "unit": "m3",
+   "cost": 645000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-03.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 3,
+   "fuel": "electricity",
+   "quantity": 3500,
+   "unit": "kWh",
+   "cost": 168000,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-03.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 4,
+   "fuel": "natural_gas",
+   "quantity": 2300,
+   "unit": "m3",
+   "cost": 345000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-04.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 4,
+   "fuel": "electricity",
+   "quantity": 3300,
+   "unit": "kWh",
+   "cost": 158400,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-04.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 5,
+   "fuel": "natural_gas",
+   "quantity": 600,
+   "unit": "m3",
+   "cost": 90000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-05.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 5,
+   "fuel": "electricity",
+   "quantity": 3200,
+   "unit": "kWh",
+   "cost": 153600,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-05.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 6,
+   "fuel": "natural_gas",
+   "quantity": 220,
+   "unit": "m3",
+   "cost": 33000,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-06.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 6,
+   "fuel": "electricity",
+   "quantity": 2600,
+   "unit": "kWh",
+   "cost": 124800,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-06.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 7,
+   "fuel": "natural_gas",
+   "quantity": 150,
+   "unit": "m3",
+   "cost": 22500,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-07.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 7,
+   "fuel": "electricity",
+   "quantity": 1400,
+   "unit": "kWh",
+   "cost": 67200,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-07.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 8,
+   "fuel": "natural_gas",
+   "quantity": 150,
+   "unit": "m3",
+   "cost": 22500,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-08.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 8,
+   "fuel": "electricity",
+   "quantity": 1300,
+   "unit": "kWh",
+   "cost": 62400,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-08.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 9,
+   "fuel": "natural_gas",
+   "quantity": 217,
+   "unit": "m3",
+   "cost": 32550,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-09.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 9,
+   "fuel": "electricity",
+   "quantity": 3201,
+   "unit": "kWh",
+   "cost": 153648,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-09.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 10,
+   "fuel": "natural_gas",
+   "quantity": 1178,
+   "unit": "m3",
+   "cost": 176700,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-10.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 10,
+   "fuel": "electricity",
+   "quantity": 3395,
+   "unit": "kWh",
+   "cost": 162960,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-10.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 11,
+   "fuel": "natural_gas",
+   "quantity": 2542,
+   "unit": "m3",
+   "cost": 381300,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-11.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 11,
+   "fuel": "electricity",
+   "quantity": 3492,
+   "unit": "kWh",
+   "cost": 167616,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-11.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 12,
+   "fuel": "natural_gas",
+   "quantity": 3596,
+   "unit": "m3",
+   "cost": 539400,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2024-12.pdf"
+  },
+  {
+   "year": 2024,
+   "month": 12,
+   "fuel": "electricity",
+   "quantity": 3589,
+   "unit": "kWh",
+   "cost": 172272,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2024-12.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 1,
+   "fuel": "natural_gas",
+   "quantity": 3844,
+   "unit": "m3",
+   "cost": 576600,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2025-01.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 1,
+   "fuel": "electricity",
+   "quantity": 3492,
+   "unit": "kWh",
+   "cost": 167616,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2025-01.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 2,
+   "fuel": "natural_gas",
+   "quantity": 3472,
+   "unit": "m3",
+   "cost": 520800,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2025-02.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 2,
+   "fuel": "electricity",
+   "quantity": 3395,
+   "unit": "kWh",
+   "cost": 162960,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2025-02.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 3,
+   "fuel": "natural_gas",
+   "quantity": 2666,
+   "unit": "m3",
+   "cost": 399900,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2025-03.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 3,
+   "fuel": "electricity",
+   "quantity": 3395,
+   "unit": "kWh",
+   "cost": 162960,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2025-03.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 4,
+   "fuel": "natural_gas",
+   "quantity": 1426,
+   "unit": "m3",
+   "cost": 213900,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2025-04.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 4,
+   "fuel": "electricity",
+   "quantity": 3201,
+   "unit": "kWh",
+   "cost": 153648,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2025-04.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 5,
+   "fuel": "natural_gas",
+   "quantity": 372,
+   "unit": "m3",
+   "cost": 55800,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2025-05.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 5,
+   "fuel": "electricity",
+   "quantity": 3104,
+   "unit": "kWh",
+   "cost": 148992,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2025-05.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 6,
+   "fuel": "natural_gas",
+   "quantity": 136,
+   "unit": "m3",
+   "cost": 20400,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2025-06.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 6,
+   "fuel": "electricity",
+   "quantity": 2522,
+   "unit": "kWh",
+   "cost": 121056,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2025-06.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 7,
+   "fuel": "natural_gas",
+   "quantity": 93,
+   "unit": "m3",
+   "cost": 13950,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2025-07.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 7,
+   "fuel": "electricity",
+   "quantity": 1358,
+   "unit": "kWh",
+   "cost": 65184,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2025-07.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 8,
+   "fuel": "natural_gas",
+   "quantity": 93,
+   "unit": "m3",
+   "cost": 13950,
+   "currency": "AMD",
+   "sourceDoc": "gas-bill-2025-08.pdf"
+  },
+  {
+   "year": 2025,
+   "month": 8,
+   "fuel": "electricity",
+   "quantity": 1261,
+   "unit": "kWh",
+   "cost": 60528,
+   "currency": "AMD",
+   "sourceDoc": "electricity-bill-2025-08.pdf"
+  }
+ ]
+}

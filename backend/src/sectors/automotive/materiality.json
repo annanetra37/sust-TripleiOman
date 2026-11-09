@@ -1,0 +1,82 @@
+[
+  {
+    "id": "auto-iro-battery-hr",
+    "topic": "Battery supply-chain human rights risk",
+    "type": "negative_impact",
+    "timeHorizon": "short",
+    "valueChainPosition": "upstream",
+    "note": "Cobalt mining in DRC (artisanal mining, child labor risk), lithium extraction in Chile/Argentina (water stress, indigenous rights). EU Battery Regulation due-diligence requirements from Feb 2025."
+  },
+  {
+    "id": "auto-iro-use-phase",
+    "topic": "Use-phase emissions dominance",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "For ICE vehicles, use-phase is ~65% of lifecycle emissions (BMW 2024). Transition to BEV shifts the hotspot from use-phase to battery production. Requires dual-track SBT pathway (ICE reduction + BEV ramp)."
+  },
+  {
+    "id": "auto-iro-ice-phaseout",
+    "topic": "ICE phase-out regulation (transition risk)",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "own_operations",
+    "note": "EU ban on new ICE sales from 2035, UK from 2030 (delayed to 2035), California from 2035. Stranded-asset risk for ICE powertrain tooling and supplier contracts."
+  },
+  {
+    "id": "auto-iro-circular-battery",
+    "topic": "Circular battery remanufacturing opportunity",
+    "type": "opportunity",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Second-life applications for degraded EV batteries (stationary storage). EU Battery Regulation mandates recycled content targets: 16% Co, 6% Li, 6% Ni by 2031."
+  },
+  {
+    "id": "auto-iro-critical-minerals",
+    "topic": "Critical mineral supply disruption",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "upstream",
+    "note": "Lithium, cobalt, nickel, rare earths subject to geopolitical concentration (China refining dominance). EU Critical Raw Materials Act and US IRA domestic-sourcing requirements."
+  },
+  {
+    "id": "auto-iro-fleet-co2",
+    "topic": "EU fleet CO2 target compliance penalties",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "downstream",
+    "note": "€95 per g CO2/km exceeded × vehicles sold. VW paid €100M+ in 2021. 2025 target: 93.6 g/km; 2030: 49.5 g/km; 2035: 0 g/km."
+  },
+  {
+    "id": "auto-iro-catena-x",
+    "topic": "Catena-X data-space PCF exchange requirements",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "upstream",
+    "note": "BMW, VW, Mercedes require Tier-1 suppliers to share product-level carbon footprints via the Catena-X ecosystem. Non-participation risks contract loss."
+  },
+  {
+    "id": "auto-iro-elv",
+    "topic": "End-of-Life Vehicle Directive revision",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Revised EU ELV Directive proposal: mandatory recycled content targets in new vehicles, extended producer responsibility, digital vehicle passport."
+  },
+  {
+    "id": "auto-iro-lightweight",
+    "topic": "Lightweighting and advanced materials opportunity",
+    "type": "opportunity",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "Every 100kg mass reduction saves ~0.3-0.5 L/100km (ICE) or ~0.4 kWh/100km (BEV). Carbon fiber, high-strength steel, aluminum body panels — direct PCF and use-phase lever."
+  },
+  {
+    "id": "auto-iro-autonomous",
+    "topic": "Autonomous driving compute energy footprint",
+    "type": "risk",
+    "timeHorizon": "long",
+    "valueChainPosition": "downstream",
+    "note": "Level 4+ autonomy adds 500-2000W continuous compute load. For BEVs, this can reduce range 5-15% and increase use-phase carbon. Material for fleet deployment planning."
+  }
+]

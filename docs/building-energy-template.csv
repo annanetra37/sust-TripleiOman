@@ -1,0 +1,4 @@
+year,month,periodStart,periodEnd,fuel,quantity,unit,cost,currency,sourceDoc
+2025,1,,,natural_gas,5800,m3,870000,AMD,gas-bill-2025-01.pdf
+2025,1,,,electricity,3600,kWh,172800,AMD,electricity-bill-2025-01.pdf
+2025,,2025-02-10,2025-03-09,natural_gas,4900,m3,735000,AMD,gas-bill-2025-02.pdf

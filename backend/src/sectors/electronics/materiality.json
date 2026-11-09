@@ -1,0 +1,82 @@
+[
+  {
+    "id": "el-iro-pfas",
+    "topic": "PFAS use in semiconductor fabs",
+    "type": "negative_impact",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "Perfluoroalkyl substances used in lithography and cleaning are under phase-out pressure (EU REACH restriction proposal, EPA PFAS strategy). Material for fabs even if purchased from suppliers."
+  },
+  {
+    "id": "el-iro-circular",
+    "topic": "Transition opportunity — circular electronics",
+    "type": "opportunity",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Take-back schemes, modular design, refurbish/remanufacture. EU Right-to-Repair and Ecodesign for Sustainable Products Regulation."
+  },
+  {
+    "id": "el-iro-sea-labor",
+    "topic": "Supply-chain labor risk in Southeast Asia",
+    "type": "negative_impact",
+    "timeHorizon": "short",
+    "valueChainPosition": "upstream",
+    "note": "EMS and semiconductor assembly concentrated in Vietnam, Malaysia, Thailand. Migrant-worker recruitment fees, forced-labor risk. RBA VAP + CSDDD driver."
+  },
+  {
+    "id": "el-iro-oem-decarb",
+    "topic": "Customer-driven decarbonisation requirements from OEMs",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "downstream",
+    "note": "Apple, Microsoft, Dell, HPE require suppliers to set SBTs and share PCFs. Missing this disqualifies Tier-1 contracts."
+  },
+  {
+    "id": "el-iro-critical-mat",
+    "topic": "Critical materials exposure",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "upstream",
+    "note": "Gallium, germanium, rare earths subject to export controls (China → US/EU). Supply disruption risk for RF front-ends, power electronics, photonics."
+  },
+  {
+    "id": "el-iro-ewaste",
+    "topic": "E-waste and end-of-life management",
+    "type": "negative_impact",
+    "timeHorizon": "long",
+    "valueChainPosition": "downstream",
+    "note": "Transboundary movement of e-waste under Basel Convention. WEEE compliance in EU. EPR schemes spreading."
+  },
+  {
+    "id": "el-iro-water-stress",
+    "topic": "Fab water consumption in water-stressed regions",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "Semiconductor fabs consume 5–10M L/day. Siting in WRI Aqueduct tier-4+ regions (Taiwan, Arizona) presents business continuity + reputation risk."
+  },
+  {
+    "id": "el-iro-conflict-min",
+    "topic": "Conflict minerals (3TG) traceability",
+    "type": "negative_impact",
+    "timeHorizon": "short",
+    "valueChainPosition": "upstream",
+    "note": "Tin, tantalum, tungsten, gold from DRC and adjoining countries. OECD due diligence, SEC Dodd-Frank §1502, EU Conflict Minerals Regulation."
+  },
+  {
+    "id": "el-iro-data-centers",
+    "topic": "Growth in data-center demand driving Scope 3 use-phase emissions",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Generative AI workloads driving exponential server demand. Use-phase electricity > production embodied C for server SKUs within 18 months of deployment."
+  },
+  {
+    "id": "el-iro-renewable",
+    "topic": "Renewable PPA opportunities at manufacturing sites",
+    "type": "opportunity",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "Corporate PPAs in Vietnam, Malaysia, Thailand cheaper than grid since 2024. Immediate Scope 2 lever."
+  }
+]

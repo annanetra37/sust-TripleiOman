@@ -1,0 +1,82 @@
+[
+  {
+    "id": "re-iro-flood",
+    "topic": "Physical climate risk — flood exposure",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "own_operations",
+    "note": "Riverine and coastal flood risk to assets in low-lying areas. CRREM physical risk module, TCFD scenario analysis. Insurance repricing and asset devaluation."
+  },
+  {
+    "id": "re-iro-heat",
+    "topic": "Physical climate risk — extreme heat",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "own_operations",
+    "note": "Rising cooling demand and overheating risk in southern European and tropical portfolios. Affects EUI, tenant comfort, and GRESB performance scores."
+  },
+  {
+    "id": "re-iro-water-stress",
+    "topic": "Physical climate risk — water stress",
+    "type": "risk",
+    "timeHorizon": "long",
+    "valueChainPosition": "own_operations",
+    "note": "Assets in WRI Aqueduct high-stress regions face water supply constraints. Relevant for cooling towers, landscaping, and tenant operations."
+  },
+  {
+    "id": "re-iro-ordinance",
+    "topic": "Transition risk from local building performance ordinances",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "NYC Local Law 97 carbon caps, CA SB 253 climate disclosure, EU EPBD recast MEPS. Non-compliance triggers fines and limits asset liquidity."
+  },
+  {
+    "id": "re-iro-stranded",
+    "topic": "Stranded-asset risk from CRREM pathway overshoot",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "own_operations",
+    "note": "Assets exceeding CRREM 1.5 degree C carbon pathway face value write-downs. Stranding year analysis required by GRESB and growing number of institutional investors."
+  },
+  {
+    "id": "re-iro-retrofit",
+    "topic": "Deep retrofit opportunity",
+    "type": "opportunity",
+    "timeHorizon": "medium",
+    "valueChainPosition": "own_operations",
+    "note": "Envelope upgrades, heat-pump conversions, on-site PV. Reduces EUI, extends stranding year, improves EPC rating, and unlocks EU Taxonomy alignment for CapEx."
+  },
+  {
+    "id": "re-iro-green-lease",
+    "topic": "Tenant green lease requirements",
+    "type": "opportunity",
+    "timeHorizon": "short",
+    "valueChainPosition": "downstream",
+    "note": "Corporate tenants increasingly require green lease clauses for Scope 3 reporting. Landlords offering data sharing and efficiency commitments attract premium tenants."
+  },
+  {
+    "id": "re-iro-taxonomy",
+    "topic": "EU Taxonomy alignment pressure",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "SFDR Article 8/9 funds must report taxonomy-aligned share of real estate holdings. Non-aligned assets face capital allocation headwinds from institutional investors."
+  },
+  {
+    "id": "re-iro-embodied",
+    "topic": "Embodied carbon in new developments",
+    "type": "negative_impact",
+    "timeHorizon": "long",
+    "valueChainPosition": "upstream",
+    "note": "A1-A3 embodied carbon dominates whole-life footprint of new builds. RICS Whole Life Carbon standard, GLA policy, Dutch MPG regulation drive reporting and limits."
+  },
+  {
+    "id": "re-iro-social-housing",
+    "topic": "Energy poverty and social housing retrofit",
+    "type": "negative_impact",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Fuel-poor tenants in low-EPC housing face disproportionate energy cost burden. Social taxonomy dimension, SFDR PAI 14 (social), and reputational risk for housing REITs."
+  }
+]

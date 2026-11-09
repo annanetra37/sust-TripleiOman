@@ -1,0 +1,51 @@
+{
+  "name": "triple-i-esg-backend",
+  "version": "1.0.0",
+  "description": "Triple I ESG Portal - Backend API",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "node src/prisma/seed.js",
+    "test": "node --test --test-timeout=60000 test/*.test.js",
+    "db:seed:buildings": "node src/prisma/seedBuildingDemo.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@prisma/adapter-pg": "^7.6.0",
+    "@prisma/client": "^7.6.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dejavu-fonts-ttf": "^2.37.3",
+    "docx": "^9.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.15.1",
+    "pg": "^8.13.1",
+    "resend": "^4.1.0",
+    "sharp": "^0.33.5",
+    "tesseract.js": "^5.1.1",
+    "uuid": "^10.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "prisma": "^7.6.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

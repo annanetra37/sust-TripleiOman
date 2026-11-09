@@ -1,0 +1,214 @@
+[
+  {
+    "code": "TC-HW-410a.1",
+    "name": "Percentage of products by revenue that contain IEC 62474 declarable substances",
+    "unit": "%",
+    "framework": "SASB",
+    "category": "product",
+    "formula": "sum(product.revenue where has_declarable=true) / sum(product.revenue)",
+    "aggregation": "ratio",
+    "sortOrder": 10
+  },
+  {
+    "code": "TC-HW-410a.2",
+    "name": "Percentage of eligible products, by revenue, meeting ENERGY STAR criteria",
+    "unit": "%",
+    "framework": "SASB",
+    "category": "product",
+    "aggregation": "ratio",
+    "sortOrder": 20
+  },
+  {
+    "code": "TC-HW-410a.3",
+    "name": "Percentage of eligible products, by revenue, meeting EPEAT",
+    "unit": "%",
+    "framework": "SASB",
+    "category": "product",
+    "aggregation": "ratio",
+    "sortOrder": 30
+  },
+  {
+    "code": "TC-HW-410a.4",
+    "name": "Weight of end-of-life products and e-waste recovered; percentage recycled",
+    "unit": "t; %",
+    "framework": "SASB",
+    "category": "environmental",
+    "sortOrder": 40
+  },
+  {
+    "code": "TC-SC-110a.1",
+    "name": "Gross global Scope 1 emissions; percentage covered under emissions-limiting regulations",
+    "unit": "tCO2e; %",
+    "framework": "SASB",
+    "category": "environmental",
+    "formula": "sum(fE1.totalEmissions where scope='Scope 1')",
+    "aggregation": "sum",
+    "sortOrder": 50
+  },
+  {
+    "code": "TC-SC-110a.2",
+    "name": "Discussion of long-term and short-term strategy to manage Scope 1 emissions",
+    "unit": "narrative",
+    "framework": "SASB",
+    "category": "environmental",
+    "sortOrder": 60
+  },
+  {
+    "code": "TC-SC-130a.1",
+    "name": "Total energy consumed; percentage grid electricity; percentage renewable",
+    "unit": "GJ; %; %",
+    "framework": "SASB",
+    "category": "environmental",
+    "formula": "sum(fE1.quantity where unit in ['kWh','MWh'])",
+    "aggregation": "sum",
+    "sortOrder": 70
+  },
+  {
+    "code": "TC-SC-140a.1",
+    "name": "Total water withdrawn; percentage in regions of high or extremely high baseline water stress",
+    "unit": "m3; %",
+    "framework": "SASB",
+    "category": "environmental",
+    "sortOrder": 80
+  },
+  {
+    "code": "TC-SC-140a.2",
+    "name": "Description of water management risks and mitigation strategies",
+    "unit": "narrative",
+    "framework": "SASB",
+    "category": "environmental",
+    "sortOrder": 90
+  },
+  {
+    "code": "TC-SC-150a.1",
+    "name": "Amount of hazardous waste from manufacturing; percentage recycled",
+    "unit": "t; %",
+    "framework": "SASB",
+    "category": "environmental",
+    "sortOrder": 100
+  },
+  {
+    "code": "TC-SC-320a.1",
+    "name": "Description of efforts to assess, monitor, and reduce exposure to human rights and labor risks in the supply chain",
+    "unit": "narrative",
+    "framework": "SASB",
+    "category": "social",
+    "sortOrder": 110
+  },
+  {
+    "code": "TC-SC-320a.2",
+    "name": "Total amount of monetary losses as a result of legal proceedings associated with labor violations",
+    "unit": "USD",
+    "framework": "SASB",
+    "category": "social",
+    "sortOrder": 120
+  },
+  {
+    "code": "TC-SC-330a.1",
+    "name": "Percentage of employees requiring work visa",
+    "unit": "%",
+    "framework": "SASB",
+    "category": "social",
+    "sortOrder": 130
+  },
+  {
+    "code": "TC-SC-410a.1",
+    "name": "Percentage of products by revenue that contain IEC 62474 declarable substances",
+    "unit": "%",
+    "framework": "SASB",
+    "category": "product",
+    "sortOrder": 140
+  },
+  {
+    "code": "TC-SC-410a.2",
+    "name": "Processor energy efficiency at a system-level for servers, desktops, laptops",
+    "unit": "W or GFLOPS/W",
+    "framework": "SASB",
+    "category": "product",
+    "sortOrder": 150
+  },
+  {
+    "code": "TC-SC-440a.1",
+    "name": "Description of the management of risks associated with the use of critical materials",
+    "unit": "narrative",
+    "framework": "SASB",
+    "category": "environmental",
+    "sortOrder": 160
+  },
+  {
+    "code": "RBA-AUDIT-COV",
+    "name": "Share of tier-1 suppliers audited against RBA Code of Conduct in the last 24 months",
+    "unit": "%",
+    "framework": "RBA",
+    "category": "social",
+    "sortOrder": 200
+  },
+  {
+    "code": "RBA-VAP-PASS",
+    "name": "Percentage of audited suppliers achieving Validated Audit Process (VAP) closure",
+    "unit": "%",
+    "framework": "RBA",
+    "category": "social",
+    "sortOrder": 210
+  },
+  {
+    "code": "CMRT-SMELTERS",
+    "name": "Conflict-minerals smelter coverage: identified / RMI-compliant",
+    "unit": "count; %",
+    "framework": "CONFLICT_MINERALS",
+    "category": "social",
+    "sortOrder": 220
+  },
+  {
+    "code": "PCF-COVERAGE",
+    "name": "Per-SKU PCF coverage — share of revenue covered by a calculated product footprint",
+    "unit": "%",
+    "framework": "custom",
+    "category": "product",
+    "formula": "sum(product.revenue where has_pcf=true) / sum(product.revenue)",
+    "aggregation": "ratio",
+    "sortOrder": 230
+  },
+  {
+    "code": "PCF-PRIMARY-DATA",
+    "name": "Primary-data share in PCF calculations (ESRS E1 §51(g))",
+    "unit": "%",
+    "framework": "ESRS_E1",
+    "category": "product",
+    "formula": "weighted_avg(pcfCalculation.primaryDataPct by product.revenue)",
+    "aggregation": "avg",
+    "sortOrder": 240
+  },
+  {
+    "code": "E1-6-ELECT",
+    "name": "Total GHG emissions (Scope 1+2+3) per EUR million revenue (electronics intensity)",
+    "unit": "tCO2e / EUR M",
+    "framework": "ESRS_E1",
+    "category": "environmental",
+    "sortOrder": 250
+  },
+  {
+    "code": "E5-CIRC-RECY",
+    "name": "Recycled content share in packaging and product (by mass)",
+    "unit": "%",
+    "framework": "ESRS_E5",
+    "category": "environmental",
+    "sortOrder": 260
+  },
+  {
+    "code": "ROHS-COMP",
+    "name": "Share of SKUs compliant with RoHS substance restrictions",
+    "unit": "%",
+    "framework": "ROHS_REACH",
+    "category": "product",
+    "sortOrder": 270
+  },
+  {
+    "code": "REACH-SVHC",
+    "name": "SKUs containing REACH SVHCs above 0.1% w/w",
+    "unit": "count",
+    "framework": "ROHS_REACH",
+    "category": "product",
+    "sortOrder": 280
+  }
+]

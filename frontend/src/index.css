@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium px-4 py-2 rounded-lg border border-gray-300 transition-colors duration-150
+           dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200 dark:border-gray-600;
+  }
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-150;
+  }
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all duration-150
+           dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400;
+  }
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6
+           dark:bg-gray-900 dark:border-gray-800;
+  }
+  .stat-card {
+    @apply card flex flex-col gap-1;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+}
+
+/* Print styles — for dashboard visual PDF export */
+@media print {
+  /* Hide non-content elements */
+  aside, header, .fixed, nav, button, a[class*="btn"],
+  [class*="group-hover"], [class*="AssistantChat"] {
+    display: none !important;
+  }
+
+  /* Reset layout to single column full width */
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #root, #root > div, .flex.h-screen, .flex.h-screen > div {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  main {
+    padding: 10px !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  /* Cards: keep together, white bg, preserve borders */
+  .card, .stat-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 1px solid #d1d5db !important;
+    background: white !important;
+    box-shadow: none !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Grid: force 2-col for charts on print */
+  .grid {
+    gap: 10px !important;
+  }
+
+  /* Ensure SVG chart colors are preserved */
+  svg, svg * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Recharts specific: force colors */
+  .recharts-surface {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .recharts-wrapper {
+    page-break-inside: avoid;
+  }
+
+  /* Badge colors preserved */
+  .badge, [class*="bg-"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Add a title at top */
+  main::before {
+    content: "ESG Dashboard Export";
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: #003700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #003700;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 1cm;
+    size: A4 landscape;
+  }
+}

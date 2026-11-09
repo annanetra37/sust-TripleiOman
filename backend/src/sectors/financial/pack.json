@@ -1,0 +1,14 @@
+{
+  "key": "financial",
+  "name": "Financial Services",
+  "version": "1.0.0",
+  "description": "Sector pack for banks, asset managers, and insurers. Covers PCAF financed emissions, SFDR Principal Adverse Impacts, TCFD portfolio alignment, EU Taxonomy eligibility, and Net-Zero Banking Alliance targets.",
+  "frameworks": ["PCAF", "SFDR_PAI", "TCFD", "EU_TAXONOMY", "NZBA"],
+  "lifecycleStagesActive": [],
+  "functionalUnits": ["1 EUR M AUM", "1 exposure", "1 portfolio"],
+  "reportTemplates": ["pcaf-financed-emissions", "sfdr-pai-statement", "tcfd-report"],
+  "license": {
+    "factorsSource": ["PCAF 2024 (public subset)", "DEFRA 2024", "World Bank 2024"],
+    "note": "Factors bundled in this pack are either public-domain or licensed for Triple I distribution. See SECTOR_PACK_LICENSE.md."
+  }
+}

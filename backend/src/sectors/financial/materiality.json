@@ -1,0 +1,82 @@
+[
+  {
+    "id": "fin-iro-transition-lending",
+    "topic": "Transition risk from high-carbon lending",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Loan books concentrated in fossil fuel extraction, coal power, and heavy industry face impairment as carbon pricing tightens and demand shifts. NZBA sectoral targets require phase-down plans."
+  },
+  {
+    "id": "fin-iro-physical-re",
+    "topic": "Physical risk exposure in real estate book",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Commercial and residential mortgage portfolios exposed to flood, wildfire, and sea-level rise. TCFD scenario analysis required for material exposures."
+  },
+  {
+    "id": "fin-iro-stranded-ff",
+    "topic": "Stranded-asset risk in fossil fuel equities",
+    "type": "risk",
+    "timeHorizon": "long",
+    "valueChainPosition": "downstream",
+    "note": "Equity and fixed-income holdings in oil, gas, and coal companies subject to reserve write-downs under IEA Net Zero scenarios. SFDR PAI 4 disclosure driver."
+  },
+  {
+    "id": "fin-iro-sfdr-burden",
+    "topic": "SFDR regulatory disclosure burden",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "Principal Adverse Impact statements, pre-contractual disclosures, and periodic reporting under SFDR Level 2 RTS require extensive data collection from investee companies."
+  },
+  {
+    "id": "fin-iro-pcaf-dq",
+    "topic": "PCAF data quality improvement cost",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "Moving from PCAF data quality score 4-5 (sector averages) to score 1-2 (verified company data) requires investee engagement, data vendor contracts, and internal tooling."
+  },
+  {
+    "id": "fin-iro-green-bond",
+    "topic": "Green bond and sustainability-linked loan opportunity",
+    "type": "opportunity",
+    "timeHorizon": "short",
+    "valueChainPosition": "downstream",
+    "note": "Growing demand for EU Green Bond Standard-compliant issuances and sustainability-linked loans with credible KPIs. Fee income and AUM growth opportunity."
+  },
+  {
+    "id": "fin-iro-litigation",
+    "topic": "Climate litigation risk from investee companies",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Investee companies facing climate litigation (e.g., Milieudefensie v. Shell, ClientEarth v. board directors) create contingent liability and reputational risk for shareholders."
+  },
+  {
+    "id": "fin-iro-sovereign",
+    "topic": "Sovereign debt climate vulnerability",
+    "type": "risk",
+    "timeHorizon": "long",
+    "valueChainPosition": "downstream",
+    "note": "Government bonds of climate-vulnerable nations face credit deterioration from physical impacts (SIDS, Sub-Saharan Africa). PCAF sovereign debt methodology applies."
+  },
+  {
+    "id": "fin-iro-mortgage-flood",
+    "topic": "Mortgage book flood risk",
+    "type": "risk",
+    "timeHorizon": "medium",
+    "valueChainPosition": "downstream",
+    "note": "Residential mortgage portfolios with collateral in flood-prone areas face LTV deterioration and insurance gap widening. ECB climate stress test driver."
+  },
+  {
+    "id": "fin-iro-talent",
+    "topic": "Responsible investment talent competition",
+    "type": "risk",
+    "timeHorizon": "short",
+    "valueChainPosition": "own_operations",
+    "note": "Scarcity of ESG analysts, climate risk modellers, and sustainable finance specialists. Talent retention critical for SFDR compliance and product development."
+  }
+]

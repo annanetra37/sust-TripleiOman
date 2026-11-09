@@ -1,0 +1,42 @@
+[
+  { "source": "defra_2024", "activityName": "Grid electricity (EU-27 average)",              "materialClass": "grid_electricity_eu", "region": "EU", "value": 0.238, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.024 },
+  { "source": "defra_2024", "activityName": "Grid electricity (United States average)",      "materialClass": "grid_electricity_us", "region": "US", "value": 0.389, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.039 },
+  { "source": "defra_2024", "activityName": "Grid electricity (United Kingdom)",             "materialClass": "grid_electricity_uk", "region": "UK", "value": 0.207, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.021 },
+  { "source": "defra_2024", "activityName": "Grid electricity (Germany)",                    "materialClass": "grid_electricity_de", "region": "DE", "value": 0.381, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.038 },
+  { "source": "defra_2024", "activityName": "Grid electricity (France)",                     "materialClass": "grid_electricity_fr", "region": "FR", "value": 0.052, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.005 },
+  { "source": "defra_2024", "activityName": "Grid electricity (Netherlands)",                "materialClass": "grid_electricity_nl", "region": "NL", "value": 0.328, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.033 },
+
+  { "source": "defra_2024", "activityName": "Natural gas combustion",                        "materialClass": "natural_gas",         "region": "GLO", "value": 0.184, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.018 },
+  { "source": "defra_2024", "activityName": "District heating (EU average)",                 "materialClass": "district_heating_eu", "region": "EU", "value": 0.146, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.029 },
+  { "source": "defra_2024", "activityName": "Heating oil combustion",                        "materialClass": "oil_heating",         "region": "GLO", "value": 2.54,  "unit": "kgCO2e/litre", "functionalUnit": "litre", "vintage": 2024, "uncertaintyStd": 0.25 },
+
+  { "source": "rics_wlc_2024", "activityName": "Embodied carbon — concrete frame new build",   "materialClass": "embodied_concrete_frame",   "region": "GLO", "value": 650,  "unit": "kgCO2e/m2", "functionalUnit": "m2", "vintage": 2024, "uncertaintyStd": 130 },
+  { "source": "rics_wlc_2024", "activityName": "Embodied carbon — steel frame new build",      "materialClass": "embodied_steel_frame",      "region": "GLO", "value": 580,  "unit": "kgCO2e/m2", "functionalUnit": "m2", "vintage": 2024, "uncertaintyStd": 116 },
+  { "source": "rics_wlc_2024", "activityName": "Embodied carbon — timber frame new build",     "materialClass": "embodied_timber_frame",     "region": "GLO", "value": 350,  "unit": "kgCO2e/m2", "functionalUnit": "m2", "vintage": 2024, "uncertaintyStd": 70 },
+  { "source": "rics_wlc_2024", "activityName": "Embodied carbon — refurbishment (major)",      "materialClass": "embodied_refurbishment",    "region": "GLO", "value": 200,  "unit": "kgCO2e/m2", "functionalUnit": "m2", "vintage": 2024, "uncertaintyStd": 50 },
+
+  { "source": "defra_2024", "activityName": "Water supply",                                  "materialClass": "water_supply",        "region": "GLO", "value": 0.149, "unit": "kgCO2e/m3", "functionalUnit": "m3", "vintage": 2024, "uncertaintyStd": 0.015 },
+  { "source": "defra_2024", "activityName": "Water treatment",                               "materialClass": "water_treatment",     "region": "GLO", "value": 0.272, "unit": "kgCO2e/m3", "functionalUnit": "m3", "vintage": 2024, "uncertaintyStd": 0.027 },
+
+  { "source": "defra_2024", "activityName": "Waste to landfill (commercial mixed)",          "materialClass": "waste_landfill",      "region": "GLO", "value": 467,   "unit": "kgCO2e/t", "functionalUnit": "t", "vintage": 2024, "uncertaintyStd": 93 },
+  { "source": "defra_2024", "activityName": "Waste recycled (commercial mixed)",             "materialClass": "waste_recycled",      "region": "GLO", "value": 21.3,  "unit": "kgCO2e/t", "functionalUnit": "t", "vintage": 2024, "uncertaintyStd": 4.3 },
+
+  { "source": "defra_2024", "activityName": "Refrigerant leakage — R410A",                   "materialClass": "refrigerant_r410a",   "region": "GLO", "value": 2088,  "unit": "kgCO2e/kg", "functionalUnit": "kg", "vintage": 2024, "uncertaintyStd": 209 },
+  { "source": "defra_2024", "activityName": "Refrigerant leakage — R32",                     "materialClass": "refrigerant_r32",     "region": "GLO", "value": 675,   "unit": "kgCO2e/kg", "functionalUnit": "kg", "vintage": 2024, "uncertaintyStd": 68 },
+
+  { "source": "defra_2024", "activityName": "Grid electricity (Japan)",                      "materialClass": "grid_electricity_jp", "region": "JP", "value": 0.459, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.046 },
+  { "source": "defra_2024", "activityName": "Grid electricity (Australia)",                  "materialClass": "grid_electricity_au", "region": "AU", "value": 0.656, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.066 },
+  { "source": "defra_2024", "activityName": "Grid electricity (Singapore)",                  "materialClass": "grid_electricity_sg", "region": "SG", "value": 0.408, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.041 },
+  { "source": "defra_2024", "activityName": "Grid electricity (Canada)",                     "materialClass": "grid_electricity_ca", "region": "CA", "value": 0.120, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.012 },
+
+  { "source": "defra_2024", "activityName": "LPG combustion",                                "materialClass": "lpg_heating",         "region": "GLO", "value": 1.56,  "unit": "kgCO2e/litre", "functionalUnit": "litre", "vintage": 2024, "uncertaintyStd": 0.16 },
+  { "source": "defra_2024", "activityName": "Biomass — wood pellets combustion",              "materialClass": "biomass_pellets",     "region": "GLO", "value": 0.015, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.003 },
+
+  { "source": "rics_wlc_2024", "activityName": "Embodied carbon — concrete frame high-rise",   "materialClass": "embodied_concrete_highrise", "region": "GLO", "value": 780, "unit": "kgCO2e/m2", "functionalUnit": "m2", "vintage": 2024, "uncertaintyStd": 156 },
+  { "source": "rics_wlc_2024", "activityName": "Embodied carbon — hybrid timber-concrete",     "materialClass": "embodied_hybrid_timber",     "region": "GLO", "value": 420, "unit": "kgCO2e/m2", "functionalUnit": "m2", "vintage": 2024, "uncertaintyStd": 84 },
+
+  { "source": "defra_2024", "activityName": "District heating (Nordic average)",             "materialClass": "district_heating_nordic", "region": "NORDIC", "value": 0.068, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.014 },
+  { "source": "defra_2024", "activityName": "District cooling (EU average)",                 "materialClass": "district_cooling_eu",     "region": "EU",     "value": 0.107, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.021 },
+
+  { "source": "defra_2024", "activityName": "Grid electricity (China)",                      "materialClass": "grid_electricity_cn",     "region": "CN",     "value": 0.612, "unit": "kgCO2e/kWh", "functionalUnit": "kWh", "vintage": 2024, "uncertaintyStd": 0.061 }
+]

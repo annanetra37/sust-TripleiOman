@@ -1,0 +1,14 @@
+{
+  "key": "automotive",
+  "name": "Automotive & Mobility",
+  "version": "1.0.0",
+  "description": "Sector pack for OEMs, Tier-1/2 suppliers, and mobility companies. Covers SASB TR-AU, ESRS E1/E5, EU fleet CO2 regulation, Catena-X PCF exchange, and the EU Battery Regulation passport.",
+  "frameworks": ["SASB_TR_AU", "ESRS_E1", "ESRS_E5", "EU_FLEET_CO2", "CATENA_X", "EU_BATTERY_REG"],
+  "lifecycleStagesActive": ["A1", "A2", "A3", "A4", "B1", "B6", "C1", "C3"],
+  "functionalUnits": ["1 vehicle", "1 battery pack", "1 powertrain module", "1 component"],
+  "reportTemplates": ["sasb-tr-au", "catena-x-pcf", "eu-battery-passport"],
+  "license": {
+    "factorsSource": ["Ecoinvent 3.10 (public subset)", "DEFRA 2024", "GREET Model (ANL)"],
+    "note": "Drivetrain factors derived from published OEM sustainability reports (BMW 2024, VW 2024) and the GREET lifecycle model."
+  }
+}

@@ -1,0 +1,202 @@
+[
+  {
+    "code": "PCAF-TOTAL-FE",
+    "name": "Total financed emissions",
+    "unit": "tCO2e",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.attributedEmissions)",
+    "aggregation": "sum",
+    "sortOrder": 10
+  },
+  {
+    "code": "PCAF-WACI",
+    "name": "Weighted average carbon intensity",
+    "unit": "tCO2e/EUR M revenue",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(weight_i * intensity_i) where weight_i = exposure_i / totalAUM",
+    "aggregation": "weighted_avg",
+    "sortOrder": 20
+  },
+  {
+    "code": "PCAF-COV",
+    "name": "Percentage of AUM covered by financed emissions calculation",
+    "unit": "%",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.AUM where hasEmissions=true) / sum(exposure.AUM)",
+    "aggregation": "ratio",
+    "sortOrder": 30
+  },
+  {
+    "code": "PCAF-DQ",
+    "name": "Average PCAF data quality score",
+    "unit": "score (1-5)",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "weighted_avg(exposure.dataQualityScore by exposure.AUM)",
+    "aggregation": "weighted_avg",
+    "sortOrder": 40
+  },
+  {
+    "code": "PCAF-FE-EQUITY",
+    "name": "Financed emissions — listed equity",
+    "unit": "tCO2e",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.attributedEmissions where assetClass='listed_equity')",
+    "aggregation": "sum",
+    "sortOrder": 50
+  },
+  {
+    "code": "PCAF-FE-CORPBOND",
+    "name": "Financed emissions — corporate bonds",
+    "unit": "tCO2e",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.attributedEmissions where assetClass='corporate_bonds')",
+    "aggregation": "sum",
+    "sortOrder": 60
+  },
+  {
+    "code": "PCAF-FE-BIZLOAN",
+    "name": "Financed emissions — business loans",
+    "unit": "tCO2e",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.attributedEmissions where assetClass='business_loans')",
+    "aggregation": "sum",
+    "sortOrder": 70
+  },
+  {
+    "code": "PCAF-FE-PROJFIN",
+    "name": "Financed emissions — project finance",
+    "unit": "tCO2e",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.attributedEmissions where assetClass='project_finance')",
+    "aggregation": "sum",
+    "sortOrder": 80
+  },
+  {
+    "code": "PCAF-FE-CRE",
+    "name": "Financed emissions — commercial real estate",
+    "unit": "tCO2e",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.attributedEmissions where assetClass='commercial_re')",
+    "aggregation": "sum",
+    "sortOrder": 90
+  },
+  {
+    "code": "PCAF-FE-MORTGAGE",
+    "name": "Financed emissions — mortgages",
+    "unit": "tCO2e",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.attributedEmissions where assetClass='mortgages')",
+    "aggregation": "sum",
+    "sortOrder": 100
+  },
+  {
+    "code": "PCAF-FE-MOTOR",
+    "name": "Financed emissions — motor vehicle loans",
+    "unit": "tCO2e",
+    "framework": "PCAF",
+    "category": "environmental",
+    "formula": "sum(exposure.attributedEmissions where assetClass='motor_vehicle_loans')",
+    "aggregation": "sum",
+    "sortOrder": 110
+  },
+  {
+    "code": "SFDR-PAI1",
+    "name": "GHG emissions (PAI 1)",
+    "unit": "tCO2e",
+    "framework": "SFDR_PAI",
+    "category": "environmental",
+    "formula": "sum(investee.scope1 + investee.scope2)",
+    "aggregation": "sum",
+    "sortOrder": 120
+  },
+  {
+    "code": "SFDR-PAI2",
+    "name": "Carbon footprint (PAI 2)",
+    "unit": "tCO2e/EUR M invested",
+    "framework": "SFDR_PAI",
+    "category": "environmental",
+    "formula": "sum(investee.attributedEmissions) / (totalAUM / 1e6)",
+    "aggregation": "ratio",
+    "sortOrder": 130
+  },
+  {
+    "code": "SFDR-PAI3",
+    "name": "GHG intensity of investee companies (PAI 3)",
+    "unit": "tCO2e/EUR M revenue",
+    "framework": "SFDR_PAI",
+    "category": "environmental",
+    "formula": "sum(weight_i * (investee_i.scope1 + investee_i.scope2) / investee_i.revenue)",
+    "aggregation": "weighted_avg",
+    "sortOrder": 140
+  },
+  {
+    "code": "SFDR-PAI4",
+    "name": "Exposure to companies active in the fossil fuel sector (PAI 4)",
+    "unit": "%",
+    "framework": "SFDR_PAI",
+    "category": "environmental",
+    "formula": "sum(exposure.AUM where investee.fossilFuel=true) / sum(exposure.AUM)",
+    "aggregation": "ratio",
+    "sortOrder": 150
+  },
+  {
+    "code": "SFDR-PAI5",
+    "name": "Share of non-renewable energy consumption and production (PAI 5)",
+    "unit": "%",
+    "framework": "SFDR_PAI",
+    "category": "environmental",
+    "formula": "weighted_avg(investee.nonRenewableShare by exposure.AUM)",
+    "aggregation": "weighted_avg",
+    "sortOrder": 160
+  },
+  {
+    "code": "SFDR-PAI6",
+    "name": "Energy consumption intensity per high impact climate sector (PAI 6)",
+    "unit": "GWh/EUR M revenue",
+    "framework": "SFDR_PAI",
+    "category": "environmental",
+    "formula": "weighted_avg(investee.energyIntensity by exposure.AUM where investee.nace in highImpactSectors)",
+    "aggregation": "weighted_avg",
+    "sortOrder": 170
+  },
+  {
+    "code": "TCFD-ALIGN-TEMP",
+    "name": "Portfolio alignment temperature",
+    "unit": "°C",
+    "framework": "TCFD",
+    "category": "environmental",
+    "formula": "weighted_avg(investee.impliedTemperatureRise by exposure.AUM)",
+    "aggregation": "weighted_avg",
+    "sortOrder": 180
+  },
+  {
+    "code": "TAXO-ALIGNED-FIN",
+    "name": "Taxonomy-aligned share of investments",
+    "unit": "%",
+    "framework": "EU_TAXONOMY",
+    "category": "environmental",
+    "formula": "sum(exposure.AUM where investee.taxonomyAligned=true) / sum(exposure.AUM)",
+    "aggregation": "ratio",
+    "sortOrder": 190
+  },
+  {
+    "code": "NZBA-INTERIM",
+    "name": "Interim reduction target progress",
+    "unit": "%",
+    "framework": "NZBA",
+    "category": "environmental",
+    "formula": "(baseline.financedEmissions - current.financedEmissions) / (baseline.financedEmissions - target.financedEmissions)",
+    "aggregation": "ratio",
+    "sortOrder": 200
+  }
+]

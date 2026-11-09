@@ -1,0 +1,17 @@
+{
+  "_readme": "Country-specific building energy factors used by services/buildingEnergy.js. Fill in 'value', 'source' and 'year' from a published source (national GHG inventory, IFI dataset, utility declaration). While 'value' is null the global default is used and the Building Energy page shows a warning. Keys: toKwh '<fuel>:<unit>' (kWh per unit), emission '<fuel>' (kgCO2e per kWh).",
+  "countries": {
+    "AM": {
+      "toKwh": {
+        "natural_gas:m3": { "value": null, "source": null, "year": null, "status": "pending_source", "note": "Armenian natural-gas net calorific value, kWh per m³ (to be confirmed by Foundation to Save Energy)" }
+      },
+      "emission": {
+        "electricity": { "value": null, "source": null, "year": null, "status": "pending_source", "note": "Armenia average grid emission factor, kgCO2e per kWh (Scope 2 location-based). Note: the CDM standardized-baseline combined margin (0.39 tCO2/MWh) is a project-baseline factor, not a grid average." },
+        "natural_gas": { "value": null, "source": null, "year": null, "status": "pending_source", "note": "Gas combustion factor, kgCO2e per kWh — IPCC default is used until set" }
+      }
+    }
+  },
+  "fx": {
+    "AMD": { "perUsd": null, "source": null, "date": null, "note": "AMD per 1 USD (e.g. Central Bank of Armenia rate) — USD savings are hidden while null" }
+  }
+}
